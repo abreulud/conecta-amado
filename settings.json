@@ -1,0 +1,4 @@
+{
+    "MAIL_URL":"smtp://localhost",
+  "public": {}
+}
