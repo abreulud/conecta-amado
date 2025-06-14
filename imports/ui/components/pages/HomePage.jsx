@@ -3,7 +3,7 @@ import { useTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
 
-export const Home = () => {
+export const HomePage = () => {
   const user = useTracker(() => Meteor.user());
   const navigate = useNavigate();
 

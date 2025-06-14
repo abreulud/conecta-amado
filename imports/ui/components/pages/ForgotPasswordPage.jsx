@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 
-export const ForgotPassword = () => {
+export const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');

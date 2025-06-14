@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
+import '../imports/api/services/server/publications'
+import '../imports/api/services/methods'
 
 // Set email sending (for development)
 process.env.MAIL_URL = Meteor.settings.MAIL_URL; // Configure in settings.json
