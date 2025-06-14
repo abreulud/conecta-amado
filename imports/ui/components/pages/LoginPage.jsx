@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
+import { AuthForm } from '../AuthForm';
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -23,46 +24,30 @@ export const LoginPage = () => {
   };
 
   return (
-      <div className="auth-container">
-        <div className="auth-card">
-          <h2  className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
-          {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">{error}</div>}
-          
-          <form onSubmit={handleSubmit}>
-            <div className='mb-4'>
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button 
-              type="submit" 
-              disabled={isLoading} 
-            >
-              {isLoading ? 'Signing in...' : 'Login'}
-            </button>
-          </form>
+    <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
+    <div className="flex w-full max-w-6xl">
+      <AuthForm
+        title="Faça Login"
+        subtitle="Entre e agende o seu serviço conosco!"
+        onSubmit={handleSubmit}
+        fields={[
+          { name: 'email', label: 'Email', type: 'email', placeholder: 'Digite seu e-mail' },
+          { name: 'password', label: 'Senha', type: 'password', placeholder: 'Digite sua senha' },
+        ]}
+        onEmailChange={setEmail}
+        onPasswordChange={setPassword}
+        buttonText="Login"
+        footerText="Não tem uma conta?"
+        footerLink={{ text: 'Registre-se', to: '/signup' }}
+        keepLoggedInOption={true}
+        forgotPasswordLink='/forgot-password'
+      />
 
-          <p>
-            Don't have an account? 
-            <a href="/signup">Sign up</a>
-          </p>
-          <p className='mt-2'>
-            <a href="/forgot-password">Forgot Password?</a>
-          </p>
-        </div>
+      <div className="hidden md:flex w-1/2 items-center justify-center p-8">
+        <img src="" alt="Imagem" className="max-w-full h-auto" />
       </div>
-    );
+      
+    </div>
+  </div>
+  );
 }
