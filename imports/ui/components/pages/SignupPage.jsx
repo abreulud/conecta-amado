@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
+import { AuthForm } from '../AuthForm';
 
 export const SignupPage = () => {
   const [name, setName] = useState('');
@@ -35,59 +36,33 @@ export const SignupPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '2rem auto' }}>
-      <h2>Sign Up</h2>
-      {error && <div style={{ color: 'red', margin: '1rem 0' }}>{error}</div>}
-      <form onSubmit={handleSubmit}>
-        <div style={{ margin: '1rem 0' }}>
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
+      <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
+      <div className="flex w-full max-w-6xl">
+        <AuthForm
+          title="Registre-se"
+          subtitle="Preencha as informações"
+          onSubmit={handleSubmit}
+          fields={[
+            { name: 'fullName', label: 'Nome Completo', placeholder:'Digite seu nome completo'},
+            { name: 'email', label: 'Email', type: 'email', placeholder: 'Digite seu e-mail' },
+            { name: 'password', label: 'Senha', type: 'password', placeholder: 'Digite sua senha' },
+            { name: 'confirmPassword', label: 'Confirmar senha', type: 'password', placeholder: 'Confirme sua senha' },
+            { name: 'phone', label: 'Contato', type: 'select-phone', placeholder: '9823456789'},
+          ]}
+          onNameChange={setName}
+          onEmailChange={setEmail}
+          onPasswordChange={setPassword}
+          onConfirmPasswordChange={setConfirmPassword}
+          buttonText="Registrar"
+          footerText="Já tem uma conta?"
+          footerLink={{ text: 'Faça Login', to: '/login' }}
+        />
+  
+        <div className="hidden md:flex w-1/2 items-center justify-center p-8">
+          <img src="" alt="Imagem" className="max-w-full h-auto" />
         </div>
-        <div style={{ margin: '1rem 0' }}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <div style={{ margin: '1rem 0' }}>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength='8'
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <div style={{ margin: '1rem 0' }}>
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            minLength='8'
-            style={{ width: '100%', padding: '0.5rem' }}
-          />
-        </div>
-        <button type="submit" disabled={isLoading} style={{ padding: '0.5rem 1rem' }}>
-          {isLoading ? 'Creating...' : 'Create Account'}
-        </button>
-      </form>
-      <p style={{ marginTop: '1rem' }}>
-        Already have an account? <a href="/login">Login</a>
-      </p>
+        
+      </div>
     </div>
-  );
+    );
 }
