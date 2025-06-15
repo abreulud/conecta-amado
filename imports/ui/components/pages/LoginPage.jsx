@@ -4,8 +4,10 @@ import { Meteor } from 'meteor/meteor';
 import { AuthForm } from '../AuthForm';
 
 export const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -13,15 +15,26 @@ export const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
-    Meteor.loginWithPassword(email, password, (err) => {
+    Meteor.loginWithPassword(formData.email, formData.password, (err) => {
       setIsLoading(false);
       if (err) {
-        setError(err.reason);
-        return
+        let message = err.reason;
+        switch(message){
+          case("Something went wrong. Please check your credentials."):
+            setError("Email ou senha incorretos");
+            return;
+          default:
+            setError(message);
+            return;
+        }
       }
       navigate('/');
     });
   };
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({...prev, [field]: value}));
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
@@ -29,18 +42,20 @@ export const LoginPage = () => {
       <AuthForm
         title="Faça Login"
         subtitle="Entre e agende o seu serviço conosco!"
+        step={0}
         onSubmit={handleSubmit}
         fields={[
           { name: 'email', label: 'Email', type: 'email', placeholder: 'Digite seu e-mail' },
           { name: 'password', label: 'Senha', type: 'password', placeholder: 'Digite sua senha' },
         ]}
-        onEmailChange={setEmail}
-        onPasswordChange={setPassword}
+        values={formData}
+        onFieldChange={handleChange}
         buttonText="Login"
         footerText="Não tem uma conta?"
         footerLink={{ text: 'Registre-se', to: '/signup' }}
         keepLoggedInOption={true}
         forgotPasswordLink='/forgot-password'
+        error={error}
       />
 
       <div className="hidden md:flex w-1/2 items-center justify-center p-8">
