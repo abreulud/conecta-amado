@@ -1,92 +1,150 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { cityOptions, stateOptions } from '../../api/formOptions';
+import { StepIndicator } from './StepIndicator';
 
 export const AuthForm = ({
-  title = "Registre-se",
-  subtitle = "Preencha as informações",
+  title,
+  subtitle,
+  step = 1,
+  setStep = () => {},
   fields = [],
-  buttonText = "Avançar",
-  footerText = "",
-  footerLink = { text: "", to: "" },
+  values = {},
+  onFieldChange,
+  buttonText,
+  footerText,
+  footerLink,
   forgotPasswordLink,
-  keepLoggedInOption,
+  keepLoggedInOption = false,
   onSubmit,
-  onNameChange,
-  onEmailChange,
-  onPasswordChange,
-  onConfirmPasswordChange,
+  error,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
+  const selectedState = values.state || '';
+
   return (
     <div className="w-full md:w-1/2 p-10 bg-[#e7ecfa] rounded-lg shadow-md max-w-[505px] flex flex-col justify-between">
-      <h2 className="text-xl text-gray-700">Bem-vinde!</h2>
-      <h1 className="text-4xl font-bold text-black">{title}</h1>
-      <p className="text-gray-500 mt-2">{subtitle}</p>
+      <div>
+        <StepIndicator step={step} onStepClick={setStep}/>
+        <h2 className="text-xl text-gray-500">Bem-vinde!</h2>
+        <h1 className="text-4xl font-bold text-black">{title}</h1>
+        <p className="text-gray-500 mt-2">{subtitle}</p>
+      </div>
 
       <form className="space-y-4 my-14" onSubmit={onSubmit}>
         {fields.map((field, idx) => {
-          if (field.type === "select-phone") {
+          const isPassword = field.type === 'password';
+
+          if (field.type === 'select-phone') {
             return (
               <div key={idx}>
                 <label className="text-sm block mb-1">{field.label}</label>
                 <div className="flex gap-2">
-                  <select className="w-1/3 rounded border bg-white border-gray-300 px-2 py-4 focus:outline-none">
-                    <option value="+55">🇧🇷 +55</option>
-                  </select>
                   <input
                     type="text"
                     placeholder={field.placeholder}
-                    className="w-2/3 rounded border border-gray-300 px-3 py-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    value={values[field.name] || ''}
+                    onChange={(e) => onFieldChange(field.name, e.target.value)}
                   />
                 </div>
               </div>
             );
           }
 
-          const isPassword = field.type === "password";
+          if (field.type === 'select') {
+            // Handle state field
+            if (field.name === 'state') {
+              return (
+                <div key={idx}>
+                  <label className="text-sm block mb-1">{field.label}</label>
+                  <select
+                    value={values.state || ''}
+                    onChange={(e) => onFieldChange(field.name, e.target.value)}
+                    className="w-full rounded border text-gray-400 border-gray-300 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    required
+                  >
+                    {stateOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            }
 
+            // Handle city field
+            if (field.name === 'city') {
+              const cities = cityOptions[selectedState] || [];
+              return (
+                <div key={idx}>
+                  <label className="text-sm block mb-1">{field.label}</label>
+                  <select
+                    value={values.city || ''}
+                    disabled={!selectedState}
+                    onChange={(e) => onFieldChange(field.name, e.target.value)}
+                    className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    required
+                  >
+                    {cities.map((city) => (
+                      <option key={city.value} value={city.value}>
+                        {city.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              );
+            }
+
+            // General select field
+            return (
+              <div key={idx}>
+                <label className="text-sm block mb-1">{field.label}</label>
+                <select
+                  name={field.name}
+                  value={values[field.name] || ''}
+                  onChange={(e) => onFieldChange(field.name, e.target.value)}
+                  className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                >
+                  {field.options.map((opt, i) => (
+                    <option key={i} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            );
+          }
+
+          // Default: text/password input
           return (
             <div key={idx}>
               <label className="text-sm block mb-1">{field.label}</label>
               <div className="relative">
                 <input
-                  type={isPassword && showPassword ? "text" : field.type}
+                  type={isPassword && showPassword ? 'text' : field.type || 'text'}
                   placeholder={field.placeholder}
-                  className="w-full rounded border border-gray-300 px-3 py-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    switch (field.name) {
-                    case 'email':
-                        onEmailChange?.(value);
-                        break;
-                    case 'password':
-                        onPasswordChange?.(value);
-                        break;
-                    case 'confirmPassword':
-                        onConfirmPasswordChange?.(value);
-                        break;
-                    case 'fullName':
-                        onNameChange?.(value);
-                        break;
-                    default:
-                        break;
-                    }
-                  }}  
+                  className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  value={values[field.name] || ''}
+                  onChange={(e) => onFieldChange(field.name, e.target.value)}
+                  required
                 />
                 {isPassword && (
                   <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-5 text-gray-600 focus:outline-none "
-                >
-                  {showPassword ? (
-                    <AiOutlineEyeInvisible size={20} />
-                  ) : (
-                    <AiOutlineEye size={20} />
-                  )}
-                </button>
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-5 text-gray-400 focus:outline-none"
+                  >
+                    {showPassword ? (
+                      <AiOutlineEyeInvisible size={20} />
+                    ) : (
+                      <AiOutlineEye size={20} />
+                    )}
+                  </button>
                 )}
               </div>
             </div>
@@ -94,7 +152,7 @@ export const AuthForm = ({
         })}
 
         {(keepLoggedInOption || forgotPasswordLink) && (
-          <div className="flex justify-between items-center text-sm text-gray-700 mt-2">
+          <div className="flex justify-between items-center text-sm text-gray-400 mt-2">
             {keepLoggedInOption && (
               <div className="flex items-center space-x-2">
                 <input type="checkbox" id="keepLogged" className="text-xs accent-black" />
@@ -109,6 +167,12 @@ export const AuthForm = ({
                 Esqueceu a senha?
               </Link>
             )}
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm">
+            {error}
           </div>
         )}
 
