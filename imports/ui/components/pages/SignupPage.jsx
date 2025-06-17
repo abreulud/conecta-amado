@@ -93,6 +93,7 @@ export const SignupPage = () => {
       <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
       <div className="flex w-full max-w-6xl">
         <AuthForm
+          greetings={true}
           title="Registre-se"
           subtitle="Preencha as informações"
           step={currentStep}
