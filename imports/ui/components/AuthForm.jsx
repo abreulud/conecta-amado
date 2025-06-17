@@ -5,6 +5,7 @@ import { cityOptions, stateOptions } from '../../api/formOptions';
 import { StepIndicator } from './StepIndicator';
 
 export const AuthForm = ({
+  greetings = false,  
   title,
   subtitle,
   step = 1,
@@ -28,7 +29,7 @@ export const AuthForm = ({
     <div className="w-full md:w-1/2 p-10 bg-[#e7ecfa] rounded-lg shadow-md max-w-[505px] flex flex-col justify-between">
       <div>
         <StepIndicator step={step} onStepClick={setStep}/>
-        <h2 className="text-xl text-gray-500">Bem-vinde!</h2>
+        {greetings && <h2 className="text-xl text-gray-500">Bem-vinde!</h2>}
         <h1 className="text-4xl font-bold text-black">{title}</h1>
         <p className="text-gray-500 mt-2">{subtitle}</p>
       </div>
@@ -155,7 +156,13 @@ export const AuthForm = ({
           <div className="flex justify-between items-center text-sm text-gray-400 mt-2">
             {keepLoggedInOption && (
               <div className="flex items-center space-x-2">
-                <input type="checkbox" id="keepLogged" className="text-xs accent-black" />
+                <input
+                type="checkbox"
+                id="keepLogged"
+                className="text-xs accent-black"
+                checked={values.keepLoggedIn || false}
+                onChange={(e) => onFieldChange('keepLoggedIn', e.target.checked)} // ✅ Update parent
+                />
                 <label htmlFor="keepLogged" className="text-xs">Lembrar-me</label>
               </div>
             )}

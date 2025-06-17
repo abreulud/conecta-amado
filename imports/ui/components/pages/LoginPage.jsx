@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { AuthForm } from '../AuthForm';
 
@@ -7,10 +9,19 @@ export const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    keepLoggedIn: false,
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const userId = useTracker(() => Meteor.userId());
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (Meteor.userId() && localStorage.getItem('keepLoggedIn') === 'true') {
+      navigate('/');
+    }
+  }, []);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,13 +39,19 @@ export const LoginPage = () => {
             return;
         }
       }
-      navigate('/');
+
+      if (formData.keepLoggedIn) {
+        localStorage.setItem("keepLoggedIn", "true");
+      } else {
+        localStorage.removeItem("keepLoggedIn");
+      }
+        navigate('/')
     });
   };
 
   const handleChange = (field, value) => {
-    setFormData((prev) => ({...prev, [field]: value}));
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
