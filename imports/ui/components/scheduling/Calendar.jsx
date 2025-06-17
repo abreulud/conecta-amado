@@ -49,11 +49,6 @@ export const Calendar = ({
     daysArray.push(d);
   }
 
-  const isFullyBooked = (dateObj) => {
-    const iso = dateObj.toISOString().slice(0, 10);
-    return fullyBookedDates.includes(iso);
-  };
-
   return (
     <div className="text-center">
     {/*Header */}
@@ -94,19 +89,15 @@ export const Calendar = ({
               key={idx}
               onClick={() => !isDisabled && onChangeDate(dateObj)}
               disabled={isDisabled}
-              className={`w-12 h-12 rounded-full flex m-auto items-center justify-center
-                ${
-                  isSelected(day)
-                    ? 'bg-white text-black font-bold cursor-pointer'
-                    : 'text-gray-800 hover:bg-white hover:text-black cursor-pointer'
-                }
-                ${isFullyBooked ? 'bg-gray-200 text-gray-400 cursor-not-allowed hover:bg-gray-200' : 'cursor-pointer'}
-                ${!isWeekdayAllowed ? 'bg-gray-200 text-gray-400 cursor-not-allowed hover:bg-gray-200' : 'cursor-pointer'}
-              `}
-            >
+              className={`w-12 h-12 rounded-full flex m-auto items-center justify-center cursor-pointer
+                ${isSelected(day) ? 'bg-white text-black font-bold': ''}
+                ${isFullyBooked ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : ''}
+                ${!isWeekdayAllowed ? 'bg-gray-200 text-gray-400 cursor-not-allowed ' : ''}
+                ${!isSelected(day) && !isFullyBooked && isWeekdayAllowed ? 'hover:bg-white' : ''}
+              `}>
               {day}
             </button>
-          );transparent
+          );
         })}
       </div>
     </div>
