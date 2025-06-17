@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
+import { AuthForm } from '../AuthForm';
 
 export const AdminLogin = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+      email: '',
+      password: '',
+    });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -13,7 +16,7 @@ export const AdminLogin = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    Meteor.loginWithPassword(email, password, (err) => {
+    Meteor.loginWithPassword(formData.email, formData.password, (err) => {
         setIsLoading(false);
         if(err) {
             setError(err.reason);
@@ -28,43 +31,27 @@ export const AdminLogin = () => {
     })
   };
 
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Admin Portal</h2>
-        {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">{error}</div>}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <input
-              type="email"
-              placeholder="Admin Email"
-              className="auth-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-6">
-            <input
-              type="password"
-              placeholder="Password"
-              className="auth-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button 
-            type="submit" 
-            className="auth-button"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Authenticating...' : 'Admin Login'}
-          </button>
-        </form>
-      </div>
+return (
+    <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
+      <div className="flex w-full max-w-6xl">
+        <AuthForm
+          title="Admin Login"
+          step={0}
+          onSubmit={handleSubmit}
+          fields={[
+            { name: 'email', label: 'Admin Email', type: 'email', placeholder: 'Digite seu e-mail' },
+            { name: 'password', label: 'Admin Senha', type: 'password', placeholder: 'Digite sua senha' },
+          ]}
+          values={formData}
+          onFieldChange={handleChange}
+          buttonText="Login"
+          error={error}
+        />
     </div>
+  </div>
   );
 };

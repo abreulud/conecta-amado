@@ -1,7 +1,9 @@
 import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
-import '../imports/api/services/server/publications'
-import '../imports/api/services/methods'
+import '../imports/api/bookings/server/publications.js';
+import '../imports/api/bookings/methods.js';
+import '../imports/api/services/server/publications.js';
+import '../imports/api/services/methods.js';
 
 // Set email sending (for development)
 process.env.MAIL_URL = Meteor.settings.MAIL_URL; // Configure in settings.json
@@ -24,17 +26,33 @@ Accounts.onCreateUser((options, user) => {
   };
 });
 
-Meteor.startup(() => {
-  if(!Meteor.users.findOneAsync({'profile.isAdmin': true})){
-    Accounts.createUser({
-      email: 'admin@example.com',
-      password: 'tempPassword123',
-      profile: {
-        name: 'Admin',
-        isAdmin: true
-      }
-    });
+async function createMockAdminUser() {
+  try {
+    const existingAdmin = await Meteor.users.findOneAsync({ 'profile.isAdmin': true });
+
+    if (!existingAdmin) {
+      const userId = Accounts.createUser({
+        email: 'admin@example.com',
+        password: 'tempPassword123',
+        profile: {
+          name: 'Admin',
+          isAdmin: true,
+          isVerified: true,
+          createdAt: new Date(),
+        }
+      });
+
+      console.log(`✅ Mock admin user created with ID: ${userId}`);
+    } else {
+      console.log('🟦 Admin user already exists.');
+    }
+  } catch (error) {
+    console.error('❌ Error checking/creating admin user:', error);
   }
+}
+
+Meteor.startup(() => {
+  createMockAdminUser();
 
   Accounts.emailTemplates.resetPassword = {
     subject() {

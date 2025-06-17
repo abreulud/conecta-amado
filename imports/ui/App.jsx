@@ -10,7 +10,6 @@ import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminRoute } from './components/admin/AdminRoute';
 import { SchedulePage } from './components/pages/SchedulePage';
-import { ServiceAdmin } from './components/admin/ServiceAdmin'
 
 export const App = () => {
   return (
@@ -21,10 +20,10 @@ export const App = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/service" element={<ServiceAdmin />} />
-        <Route path="/schedule-page" element={<SchedulePage/>}/>
+       
 
         <Route element={<PrivateRoute />}>
+          <Route path="/schedule-page" element={<SchedulePage/>}/>
           <Route path="/" element={<HomePage />} />
         </Route>
 
