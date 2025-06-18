@@ -13,7 +13,7 @@ export const HeroButtonsSection = () => {
           enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
           ut aliquip ex ea commodo consequat.
         </p>
-        <div className="flex justify-center gap-4">
+        <div className="flex gap-4">
           <Link
             to="/schedule-page"
             className="bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition"
