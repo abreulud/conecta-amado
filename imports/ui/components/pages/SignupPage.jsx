@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 import { AuthForm } from '../AuthForm';
+import { LogoSection } from '../LogoSection';
+
 import {
   cityOptions,
   stateOptions,
@@ -161,26 +163,35 @@ export const SignupPage = () => {
         ];
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
-      <div className="flex w-full max-w-6xl">
-        <AuthForm
-          greetings={true}
-          title="Registre-se"
-          subtitle="Preencha as informações"
-          step={currentStep}
-          setStep={setCurrentStep}
-          onSubmit={handleSubmit}
-          fields={stepFields}
-          values={formData}
-          onFieldChange={handleChange}
-          buttonText={currentStep === 1 ? 'Avançar' : 'Registrar'}
-          footerText="Já tem uma conta?"
-          footerLink={{ text: 'Faça Login', to: '/login' }}
-          error={error}
-        />
+    <div className="bg-[#f9f4ef]">
+      <nav className="flex justify-between items-center p-6">
+        <LogoSection />
+      </nav>
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="flex w-full max-w-6xl mb-32">
+          <AuthForm
+            greetings={true}
+            title="Registre-se"
+            subtitle="Preencha as informações"
+            step={currentStep}
+            setStep={setCurrentStep}
+            onSubmit={handleSubmit}
+            fields={stepFields}
+            values={formData}
+            onFieldChange={handleChange}
+            buttonText={currentStep === 1 ? 'Avançar' : 'Registrar'}
+            footerText="Já tem uma conta?"
+            footerLink={{ text: 'Faça Login', to: '/login' }}
+            error={error}
+          />
 
-        <div className="hidden md:flex w-1/2 items-center justify-center p-8">
-          <img src="" alt="Imagem" className="max-w-full h-auto" />
+          <div className="hidden md:flex w-1/2 items-center justify-center p-8">
+            <img
+              src="../../assets/family.svg"
+              alt="Imagem"
+              className="max-w-full h-auto"
+            />
+          </div>
         </div>
       </div>
     </div>

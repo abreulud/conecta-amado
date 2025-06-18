@@ -28,6 +28,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "daisyui": "^5.0.37",
+    "file-loader": "^6.2.0",
     "postcss": "^8.5.3",
     "postcss-load-config": "^6.0.1",
     "prettier": "^3.5.3",
