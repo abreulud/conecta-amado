@@ -3,16 +3,16 @@ import { Calendar } from '../scheduling/Calendar';
 import { Navbar } from '../scheduling/Navbar';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Services } from '../../../api/services/services';
-import { Bookings } from '../../../api/bookings/bookings'
+import { Bookings } from '../../../api/bookings/bookings';
 import { Meteor } from 'meteor/meteor';
 
 // Helper functions unchanged
-const timeToMinutes = (time) => {
+const timeToMinutes = time => {
   const [hour, minute] = time.split(':').map(Number);
   return hour * 60 + minute;
 };
 
-const minutesToTimeString = (minutes) => {
+const minutesToTimeString = minutes => {
   const h = Math.floor(minutes / 60);
   const m = minutes % 60;
   const hour12 = h % 12 === 0 ? 12 : h % 12;
@@ -49,20 +49,20 @@ export const SchedulePage = () => {
     if (!calendarMonth) return [];
     const year = calendarMonth.getFullYear();
     const month = calendarMonth.getMonth();
-  
+
     const sub = Meteor.subscribe('bookings', year, month);
     if (!sub.ready()) return [];
-  
+
     return Bookings.find({
-        date: {
-          $gte: new Date(year, month, 1).toISOString().slice(0, 10),
-          $lt: new Date(year, month + 1, 1).toISOString().slice(0, 10),
-        }
-      }).fetch();
+      date: {
+        $gte: new Date(year, month, 1).toISOString().slice(0, 10),
+        $lt: new Date(year, month + 1, 1).toISOString().slice(0, 10),
+      },
+    }).fetch();
   }, [calendarMonth]);
 
   const selectedService = useMemo(
-    () => services.find((s) => s._id === selectedServiceId),
+    () => services.find(s => s._id === selectedServiceId),
     [selectedServiceId, services]
   );
 
@@ -93,15 +93,15 @@ export const SchedulePage = () => {
     return allSlots.filter(slot => !bookedTimes.includes(slot));
   }, [selectedService, bookedTimes]);
 
-// 🧠 Helper to get available slots for a day (based on the selectedService)
-const getSlotsForDay = (service) => {
+  // 🧠 Helper to get available slots for a day (based on the selectedService)
+  const getSlotsForDay = service => {
     if (!service) return [];
     const { startTime = '09:00', endTime = '18:00' } = service;
     return generateTimeSlots(startTime, endTime);
-};
+  };
 
-// 🆕 Fully booked days calculation
-const fullyBookedDates = useMemo(() => {
+  // 🆕 Fully booked days calculation
+  const fullyBookedDates = useMemo(() => {
     if (!selectedService) return [];
 
     const slotsPerDay = getSlotsForDay(selectedService);
@@ -109,17 +109,17 @@ const fullyBookedDates = useMemo(() => {
 
     // Count how many bookings each date has
     for (const booking of bookings) {
-    if (!countsByDate[booking.date]) {
+      if (!countsByDate[booking.date]) {
         countsByDate[booking.date] = 0;
-    }
-    countsByDate[booking.date]++;
+      }
+      countsByDate[booking.date]++;
     }
 
     // Compare to total slots per day
     return Object.entries(countsByDate)
-    .filter(([_, count]) => count >= slotsPerDay.length)
-    .map(([date]) => date); // return just the list of fully booked dates
-}, [bookings, selectedService]);
+      .filter(([_, count]) => count >= slotsPerDay.length)
+      .map(([date]) => date); // return just the list of fully booked dates
+  }, [bookings, selectedService]);
 
   const handleSchedule = () => {
     if (!userName.trim()) {
@@ -149,7 +149,7 @@ const fullyBookedDates = useMemo(() => {
         date: formattedDate,
         time: selectedTime,
       },
-      (error) => {
+      error => {
         if (error) {
           alert(`Erro ao agendar: ${error.reason}`);
         } else {
@@ -169,28 +169,33 @@ const fullyBookedDates = useMemo(() => {
       <div className="flex flex-1">
         {/* Left Panel */}
         <div className="w-1/2 bg-blue-100 p-8 flex flex-col text-center">
-          <h1 className="text-xl font-semibold mb-4 p-8">Agende o seu serviço agora!</h1>
+          <h1 className="text-xl font-semibold mb-4 p-8">
+            Agende o seu serviço agora!
+          </h1>
           <div className="transform scale-120">
-            <Calendar 
-              onChangeDate={setSelectedDate} 
+            <Calendar
+              onChangeDate={setSelectedDate}
               selectedDate={selectedDate}
-              onMonthChange={setCalendarMonth} 
+              onMonthChange={setCalendarMonth}
               fullyBookedDates={fullyBookedDates}
-              allowedWeekdays={allowedWeekdays}/>
+              allowedWeekdays={allowedWeekdays}
+            />
           </div>
         </div>
 
         {/* Right Panel */}
         <div className="w-1/2 bg-[#fafafa] p-8 flex flex-col">
           <div className="mb-6">
-            <h2 className="text-lg text-center font-semibold mb-2">Escolha o serviço</h2>
+            <h2 className="text-lg text-center font-semibold mb-2">
+              Escolha o serviço
+            </h2>
             <select
               className="w-full border border-gray-300 rounded px-3 py-2"
               value={selectedServiceId}
-              onChange={(e) => setSelectedServiceId(e.target.value)}
+              onChange={e => setSelectedServiceId(e.target.value)}
             >
               <option value="">Selecione</option>
-              {services.map((service) => (
+              {services.map(service => (
                 <option key={service._id} value={service._id}>
                   {service.name}
                 </option>
@@ -199,7 +204,9 @@ const fullyBookedDates = useMemo(() => {
           </div>
 
           <div className="mb-6">
-            <h2 className="text-lg text-center font-semibold mb-2">Escolha o melhor horário</h2>
+            <h2 className="text-lg text-center font-semibold mb-2">
+              Escolha o melhor horário
+            </h2>
             <div className="space-y-2">
               {timeSlots.length === 0 ? (
                 <p className="text-center text-gray-500">
@@ -208,7 +215,7 @@ const fullyBookedDates = useMemo(() => {
                     : 'Selecione um serviço para ver os horários disponíveis.'}
                 </p>
               ) : (
-                timeSlots.map((time) => (
+                timeSlots.map(time => (
                   <button
                     key={time}
                     className={`w-full border px-4 py-2 rounded text-left hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300 ${

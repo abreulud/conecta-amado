@@ -5,10 +5,10 @@ import { useTracker } from 'meteor/react-meteor-data';
 
 export const AdminRoute = () => {
   const user = useTracker(() => Meteor.user());
-  
+
   if (!user || !user.profile?.isAdmin) {
     return <Navigate to="/admin/login" replace />;
   }
-  
+
   return <Outlet />;
 };

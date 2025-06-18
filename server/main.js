@@ -10,7 +10,7 @@ process.env.MAIL_URL = Meteor.settings.MAIL_URL; // Configure in settings.json
 
 Accounts.config({
   sendVerificationEmail: false,
-  forbidClientAccountCreation: false
+  forbidClientAccountCreation: false,
 });
 
 Accounts.onCreateUser((options, user) => {
@@ -22,13 +22,15 @@ Accounts.onCreateUser((options, user) => {
       isAdmin: options.profile?.isAdmin || false,
       isVerified: options.profile?.isVerified || false,
       createdAt: new Date(),
-    }
+    },
   };
 });
 
 async function createMockAdminUser() {
   try {
-    const existingAdmin = await Meteor.users.findOneAsync({ 'profile.isAdmin': true });
+    const existingAdmin = await Meteor.users.findOneAsync({
+      'profile.isAdmin': true,
+    });
 
     if (!existingAdmin) {
       const userId = Accounts.createUser({
@@ -39,7 +41,7 @@ async function createMockAdminUser() {
           isAdmin: true,
           isVerified: true,
           createdAt: new Date(),
-        }
+        },
       });
 
       console.log(`✅ Mock admin user created with ID: ${userId}`);
@@ -60,6 +62,6 @@ Meteor.startup(() => {
     },
     text(user, url) {
       return `Click this link to reset your password: ${url}`;
-    }
+    },
   };
 });

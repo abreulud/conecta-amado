@@ -12,7 +12,12 @@ Meteor.methods({
     check(date, String); // ISO format e.g. "2025-06-17"
     check(time, String); // Format like "9:30 AM"
 
-    console.log('Calling bookings.insert with:', { name, serviceId, date, time });
+    console.log('Calling bookings.insert with:', {
+      name,
+      serviceId,
+      date,
+      time,
+    });
 
     try {
       const bookingId = await Bookings.insertAsync({
@@ -27,7 +32,10 @@ Meteor.methods({
       return bookingId;
     } catch (error) {
       console.error('❌ Error inserting booking:', error);
-      throw new Meteor.Error('insert-failed', 'Falha ao inserir o agendamento.');
+      throw new Meteor.Error(
+        'insert-failed',
+        'Falha ao inserir o agendamento.'
+      );
     }
   },
 });

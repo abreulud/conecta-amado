@@ -28,8 +28,8 @@ export const AdminDashboard = () => {
     navigate('/admin/login');
   };
 
-  const getServiceName = (id) => {
-    const service = services.find((s) => s._id === id);
+  const getServiceName = id => {
+    const service = services.find(s => s._id === id);
     return service ? service.name : 'Serviço desconhecido';
   };
 
@@ -40,7 +40,10 @@ export const AdminDashboard = () => {
           <h2 className="text-3xl font-bold text-gray-800">
             Admin Dashboard - Welcome {user?.profile?.name}
           </h2>
-          <button onClick={handleLogout} className="auth-button bg-red-600 hover:bg-red-700">
+          <button
+            onClick={handleLogout}
+            className="auth-button bg-red-600 hover:bg-red-700"
+          >
             Logout
           </button>
         </div>
@@ -56,17 +59,27 @@ export const AdminDashboard = () => {
             <table className="w-full border-collapse border border-gray-300">
               <thead>
                 <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Name</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Service</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Date</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">Time</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Name
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Service
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Date
+                  </th>
+                  <th className="border border-gray-300 px-4 py-2 text-left">
+                    Time
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {bookings.map(({ _id, name, serviceId, date, time }) => (
                   <tr key={_id} className="hover:bg-gray-100">
                     <td className="border border-gray-300 px-4 py-2">{name}</td>
-                    <td className="border border-gray-300 px-4 py-2">{getServiceName(serviceId)}</td>
+                    <td className="border border-gray-300 px-4 py-2">
+                      {getServiceName(serviceId)}
+                    </td>
                     <td className="border border-gray-300 px-4 py-2">{date}</td>
                     <td className="border border-gray-300 px-4 py-2">{time}</td>
                   </tr>

@@ -5,7 +5,7 @@ import { cityOptions, stateOptions } from '../../api/formOptions';
 import { StepIndicator } from './StepIndicator';
 
 export const AuthForm = ({
-  greetings = false,  
+  greetings = false,
   title,
   subtitle,
   step = 1,
@@ -28,7 +28,7 @@ export const AuthForm = ({
   return (
     <div className="w-full md:w-1/2 p-10 bg-[#e7ecfa] rounded-lg shadow-md max-w-[505px] flex flex-col justify-between">
       <div>
-        <StepIndicator step={step} onStepClick={setStep}/>
+        <StepIndicator step={step} onStepClick={setStep} />
         {greetings && <h2 className="text-xl text-gray-500">Bem-vinde!</h2>}
         <h1 className="text-4xl font-bold text-black">{title}</h1>
         <p className="text-gray-500 mt-2">{subtitle}</p>
@@ -48,7 +48,7 @@ export const AuthForm = ({
                     placeholder={field.placeholder}
                     className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     value={values[field.name] || ''}
-                    onChange={(e) => onFieldChange(field.name, e.target.value)}
+                    onChange={e => onFieldChange(field.name, e.target.value)}
                   />
                 </div>
               </div>
@@ -63,11 +63,11 @@ export const AuthForm = ({
                   <label className="text-sm block mb-1">{field.label}</label>
                   <select
                     value={values.state || ''}
-                    onChange={(e) => onFieldChange(field.name, e.target.value)}
+                    onChange={e => onFieldChange(field.name, e.target.value)}
                     className="w-full rounded border text-gray-400 border-gray-300 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                   >
-                    {stateOptions.map((option) => (
+                    {stateOptions.map(option => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
@@ -86,11 +86,11 @@ export const AuthForm = ({
                   <select
                     value={values.city || ''}
                     disabled={!selectedState}
-                    onChange={(e) => onFieldChange(field.name, e.target.value)}
+                    onChange={e => onFieldChange(field.name, e.target.value)}
                     className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                   >
-                    {cities.map((city) => (
+                    {cities.map(city => (
                       <option key={city.value} value={city.value}>
                         {city.label}
                       </option>
@@ -107,7 +107,7 @@ export const AuthForm = ({
                 <select
                   name={field.name}
                   value={values[field.name] || ''}
-                  onChange={(e) => onFieldChange(field.name, e.target.value)}
+                  onChange={e => onFieldChange(field.name, e.target.value)}
                   className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                   required
                 >
@@ -127,11 +127,13 @@ export const AuthForm = ({
               <label className="text-sm block mb-1">{field.label}</label>
               <div className="relative">
                 <input
-                  type={isPassword && showPassword ? 'text' : field.type || 'text'}
+                  type={
+                    isPassword && showPassword ? 'text' : field.type || 'text'
+                  }
                   placeholder={field.placeholder}
                   className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   value={values[field.name] || ''}
-                  onChange={(e) => onFieldChange(field.name, e.target.value)}
+                  onChange={e => onFieldChange(field.name, e.target.value)}
                   required
                 />
                 {isPassword && (
@@ -157,13 +159,17 @@ export const AuthForm = ({
             {keepLoggedInOption && (
               <div className="flex items-center space-x-2">
                 <input
-                type="checkbox"
-                id="keepLogged"
-                className="text-xs accent-black"
-                checked={values.keepLoggedIn || false}
-                onChange={(e) => onFieldChange('keepLoggedIn', e.target.checked)} // ✅ Update parent
+                  type="checkbox"
+                  id="keepLogged"
+                  className="text-xs accent-black"
+                  checked={values.keepLoggedIn || false}
+                  onChange={e =>
+                    onFieldChange('keepLoggedIn', e.target.checked)
+                  } // ✅ Update parent
                 />
-                <label htmlFor="keepLogged" className="text-xs">Lembrar-me</label>
+                <label htmlFor="keepLogged" className="text-xs">
+                  Lembrar-me
+                </label>
               </div>
             )}
             {forgotPasswordLink && (
@@ -194,7 +200,10 @@ export const AuthForm = ({
       {footerText && footerLink?.text && (
         <p className="text-gray-600 text-center">
           {footerText}{' '}
-          <Link to={footerLink.to} className="text-black font-medium hover:underline">
+          <Link
+            to={footerLink.to}
+            className="text-black font-medium hover:underline"
+          >
             {footerLink.text}
           </Link>
         </p>
