@@ -10,11 +10,11 @@ export const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     setIsLoading(true);
-    
-    Accounts.resetPassword(token, newPassword, (err) => {
+
+    Accounts.resetPassword(token, newPassword, err => {
       setIsLoading(false);
       if (err) {
         setError(err.reason);
@@ -30,13 +30,13 @@ export const ResetPassword = () => {
       <h2>Set New Password</h2>
       {error && <div className="error">{error}</div>}
       {message && <div className="success">{message}</div>}
-      
+
       <form onSubmit={handleSubmit}>
         <input
           type="password"
           placeholder="New Password"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
+          onChange={e => setNewPassword(e.target.value)}
           required
         />
         <button type="submit" disabled={isLoading}>

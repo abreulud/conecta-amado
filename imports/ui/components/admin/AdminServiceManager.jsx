@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { useTracker } from 'meteor/react-meteor-data'
-import { Services } from '../../../api/services/services'
-import { Meteor } from 'meteor/meteor'
+import React, { useState } from 'react';
+import { useTracker } from 'meteor/react-meteor-data';
+import { Services } from '../../../api/services/services';
+import { Meteor } from 'meteor/meteor';
 
 const weekdays = [
   { label: 'Domingo', value: 0 },
@@ -14,51 +14,53 @@ const weekdays = [
 ];
 
 export const AdminServiceManager = () => {
-  const [newService, setNewService] = useState('')
-  const [newStartTime, setNewStartTime] = useState('09:00') // default start time
-  const [newEndTime, setNewEndTime] = useState('18:00') // default end time
+  const [newService, setNewService] = useState('');
+  const [newStartTime, setNewStartTime] = useState('09:00'); // default start time
+  const [newEndTime, setNewEndTime] = useState('18:00'); // default end time
   // New state for allowed weekdays for new service
-  const [newAllowedWeekdays, setNewAllowedWeekdays] = useState([])
+  const [newAllowedWeekdays, setNewAllowedWeekdays] = useState([]);
 
   const [editing, setEditing] = useState(null);
   const [editedName, setEditedName] = useState('');
   const [editedStartTime, setEditedStartTime] = useState('');
   const [editedEndTime, setEditedEndTime] = useState('');
   // New state for allowed weekdays when editing
-  const [editedAllowedWeekdays, setEditedAllowedWeekdays] = useState([])
+  const [editedAllowedWeekdays, setEditedAllowedWeekdays] = useState([]);
 
   const services = useTracker(() => {
-    Meteor.subscribe('services')
-    return Services.find().fetch()
-  })
+    Meteor.subscribe('services');
+    return Services.find().fetch();
+  });
 
   // Toggle weekday in array (for new service)
-  const toggleNewWeekday = (dayValue) => {
+  const toggleNewWeekday = dayValue => {
     if (newAllowedWeekdays.includes(dayValue)) {
-      setNewAllowedWeekdays(newAllowedWeekdays.filter((d) => d !== dayValue))
+      setNewAllowedWeekdays(newAllowedWeekdays.filter(d => d !== dayValue));
     } else {
-      setNewAllowedWeekdays([...newAllowedWeekdays, dayValue])
+      setNewAllowedWeekdays([...newAllowedWeekdays, dayValue]);
     }
-  }
+  };
 
   // Toggle weekday in array (for editing service)
-  const toggleEditedWeekday = (dayValue) => {
+  const toggleEditedWeekday = dayValue => {
     if (editedAllowedWeekdays.includes(dayValue)) {
-      setEditedAllowedWeekdays(editedAllowedWeekdays.filter((d) => d !== dayValue))
+      setEditedAllowedWeekdays(
+        editedAllowedWeekdays.filter(d => d !== dayValue)
+      );
     } else {
-      setEditedAllowedWeekdays([...editedAllowedWeekdays, dayValue])
+      setEditedAllowedWeekdays([...editedAllowedWeekdays, dayValue]);
     }
-  }
+  };
 
   // Updated: send all 4 parameters when creating
   const handleCreate = () => {
     if (!newService.trim()) {
-      alert('Por favor, informe o nome do serviço.')
-      return
+      alert('Por favor, informe o nome do serviço.');
+      return;
     }
     if (newAllowedWeekdays.length === 0) {
-      alert('Por favor, selecione pelo menos um dia permitido.')
-      return
+      alert('Por favor, selecione pelo menos um dia permitido.');
+      return;
     }
     Meteor.call(
       'services.insert',
@@ -66,36 +68,36 @@ export const AdminServiceManager = () => {
       newStartTime,
       newEndTime,
       newAllowedWeekdays,
-      (err) => {
+      err => {
         if (!err) {
-          setNewService('')
-          setNewStartTime('09:00')
-          setNewEndTime('18:00')
-          setNewAllowedWeekdays([])
+          setNewService('');
+          setNewStartTime('09:00');
+          setNewEndTime('18:00');
+          setNewAllowedWeekdays([]);
         } else {
-          alert(`Erro ao adicionar serviço: ${err.reason}`)
+          alert(`Erro ao adicionar serviço: ${err.reason}`);
         }
       }
-    )
-  }
+    );
+  };
 
   // Updated: accept allowedWeekdays when editing
   const handleEdit = (id, name, startTime, endTime, allowedWeekdays = []) => {
-    setEditing(id)
-    setEditedName(name)
-    setEditedStartTime(startTime || '09:00')
-    setEditedEndTime(endTime || '18:00')
-    setEditedAllowedWeekdays(allowedWeekdays)
-  }
+    setEditing(id);
+    setEditedName(name);
+    setEditedStartTime(startTime || '09:00');
+    setEditedEndTime(endTime || '18:00');
+    setEditedAllowedWeekdays(allowedWeekdays);
+  };
 
-  const handleUpdate = (id) => {
+  const handleUpdate = id => {
     if (!editedName.trim()) {
-      alert('Por favor, informe o nome do serviço.')
-      return
+      alert('Por favor, informe o nome do serviço.');
+      return;
     }
     if (editedAllowedWeekdays.length === 0) {
-      alert('Por favor, selecione pelo menos um dia permitido.')
-      return
+      alert('Por favor, selecione pelo menos um dia permitido.');
+      return;
     }
     Meteor.call(
       'services.update',
@@ -104,18 +106,18 @@ export const AdminServiceManager = () => {
       editedStartTime,
       editedEndTime,
       editedAllowedWeekdays,
-      (err) => {
-        if (!err) setEditing(null)
-        else alert(`Erro ao atualizar serviço: ${err.reason}`)
+      err => {
+        if (!err) setEditing(null);
+        else alert(`Erro ao atualizar serviço: ${err.reason}`);
       }
-    )
-  }
+    );
+  };
 
-  const handleDelete = (id) => {
-    Meteor.call('services.remove', id, (err) => {
-      if (err) alert(`Erro ao excluir serviço: ${err.reason}`)
-    })
-  }
+  const handleDelete = id => {
+    Meteor.call('services.remove', id, err => {
+      if (err) alert(`Erro ao excluir serviço: ${err.reason}`);
+    });
+  };
 
   return (
     <div className="p-6 bg-white rounded shadow max-w-md mx-auto">
@@ -125,7 +127,7 @@ export const AdminServiceManager = () => {
       <div className="flex flex-col gap-2 mb-4">
         <input
           value={newService}
-          onChange={(e) => setNewService(e.target.value)}
+          onChange={e => setNewService(e.target.value)}
           placeholder="Novo serviço"
           className="border px-3 py-2 rounded"
         />
@@ -135,7 +137,7 @@ export const AdminServiceManager = () => {
             <input
               type="time"
               value={newStartTime}
-              onChange={(e) => setNewStartTime(e.target.value)}
+              onChange={e => setNewStartTime(e.target.value)}
               className="border px-2 py-1 rounded ml-2"
             />
           </label>
@@ -145,7 +147,7 @@ export const AdminServiceManager = () => {
             <input
               type="time"
               value={newEndTime}
-              onChange={(e) => setNewEndTime(e.target.value)}
+              onChange={e => setNewEndTime(e.target.value)}
               className="border px-2 py-1 rounded ml-2"
             />
           </label>
@@ -178,32 +180,35 @@ export const AdminServiceManager = () => {
 
       {/* List of existing services with edit/delete */}
       <ul className="space-y-2">
-        {services.map((service) => (
+        {services.map(service => (
           <li key={service._id} className="flex items-center justify-between">
             {editing === service._id ? (
               <>
                 <input
                   value={editedName}
-                  onChange={(e) => setEditedName(e.target.value)}
+                  onChange={e => setEditedName(e.target.value)}
                   className="border px-2 py-1 rounded w-full mr-2"
                 />
                 <input
                   type="time"
                   value={editedStartTime}
-                  onChange={(e) => setEditedStartTime(e.target.value)}
+                  onChange={e => setEditedStartTime(e.target.value)}
                   className="border px-2 py-1 rounded mr-2"
                 />
                 <input
                   type="time"
                   value={editedEndTime}
-                  onChange={(e) => setEditedEndTime(e.target.value)}
+                  onChange={e => setEditedEndTime(e.target.value)}
                   className="border px-2 py-1 rounded mr-2"
                 />
 
                 {/* Allowed weekdays checkboxes for editing */}
                 <div className="flex flex-wrap gap-2 mr-2">
                   {weekdays.map(({ label, value }) => (
-                    <label key={value} className="inline-flex items-center space-x-1">
+                    <label
+                      key={value}
+                      className="inline-flex items-center space-x-1"
+                    >
                       <input
                         type="checkbox"
                         checked={editedAllowedWeekdays.includes(value)}
@@ -214,7 +219,10 @@ export const AdminServiceManager = () => {
                   ))}
                 </div>
 
-                <button onClick={() => handleUpdate(service._id)} className="text-green-600">
+                <button
+                  onClick={() => handleUpdate(service._id)}
+                  className="text-green-600"
+                >
                   Salvar
                 </button>
               </>
@@ -228,7 +236,9 @@ export const AdminServiceManager = () => {
                 <span className="ml-4 text-sm text-gray-500">
                   {service.allowedWeekdays && service.allowedWeekdays.length > 0
                     ? service.allowedWeekdays
-                        .map((d) => weekdays.find((w) => w.value === d)?.label?.slice(0, 3))
+                        .map(d =>
+                          weekdays.find(w => w.value === d)?.label?.slice(0, 3)
+                        )
                         .join(', ')
                     : 'Todos os dias'}
                 </span>
@@ -260,5 +270,5 @@ export const AdminServiceManager = () => {
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};

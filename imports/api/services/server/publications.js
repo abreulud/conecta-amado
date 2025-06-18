@@ -1,6 +1,6 @@
-import { Meteor } from 'meteor/meteor'
-import { Services } from '../services'
+import { Meteor } from 'meteor/meteor';
+import { Services } from '../services';
 
 Meteor.publish('services', function () {
-  return Services.find()
+  return Services.find();
 });

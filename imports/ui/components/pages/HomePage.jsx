@@ -16,7 +16,7 @@ export const HomePage = () => {
     <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
       <h2>Welcome, {user?.profile?.name || 'User'}</h2>
       <p>Email: {user?.emails?.[0].address}</p>
-      <button 
+      <button
         onClick={handleLogout}
         style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}
       >
@@ -24,4 +24,4 @@ export const HomePage = () => {
       </button>
     </div>
   );
-}
+};

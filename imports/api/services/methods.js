@@ -11,14 +11,27 @@ Meteor.methods({
     check(startTime, String);
     check(endTime, String);
     check(allowedWeekdays, [Number]);
-    console.log('Calling services.insert with:', { name, startTime, endTime, allowedWeekdays });
+    console.log('Calling services.insert with:', {
+      name,
+      startTime,
+      endTime,
+      allowedWeekdays,
+    });
 
     if (!allowedWeekdays.length) {
-      throw new Meteor.Error('validation-error', 'Deve selecionar pelo menos um dia permitido');
+      throw new Meteor.Error(
+        'validation-error',
+        'Deve selecionar pelo menos um dia permitido'
+      );
     }
 
     try {
-      const id = await Services.insertAsync({ name, startTime, endTime, allowedWeekdays });
+      const id = await Services.insertAsync({
+        name,
+        startTime,
+        endTime,
+        allowedWeekdays,
+      });
       console.log(`Inserted new service with _id: ${id}`);
       return id;
     } catch (error) {
@@ -27,16 +40,30 @@ Meteor.methods({
     }
   },
 
-  async 'services.update'(serviceId, name, startTime, endTime, allowedWeekdays) {
+  async 'services.update'(
+    serviceId,
+    name,
+    startTime,
+    endTime,
+    allowedWeekdays
+  ) {
     check(serviceId, String);
     check(name, String);
     check(startTime, String);
     check(endTime, String);
     check(allowedWeekdays, [Number]);
-    console.log(`Calling services.update on id: ${serviceId} with`, { name, startTime, endTime, allowedWeekdays });
+    console.log(`Calling services.update on id: ${serviceId} with`, {
+      name,
+      startTime,
+      endTime,
+      allowedWeekdays,
+    });
 
     if (!allowedWeekdays.length) {
-      throw new Meteor.Error('validation-error', 'Deve selecionar pelo menos um dia permitido');
+      throw new Meteor.Error(
+        'validation-error',
+        'Deve selecionar pelo menos um dia permitido'
+      );
     }
 
     try {
@@ -44,7 +71,10 @@ Meteor.methods({
         $set: { name, startTime, endTime, allowedWeekdays },
       });
       if (updatedCount === 0) {
-        throw new Meteor.Error('not-found', 'Serviço não encontrado para atualizar.');
+        throw new Meteor.Error(
+          'not-found',
+          'Serviço não encontrado para atualizar.'
+        );
       }
       console.log(`Updated service ${serviceId} successfully.`);
       return updatedCount;
@@ -61,13 +91,19 @@ Meteor.methods({
     try {
       const removedCount = await Services.removeAsync(serviceId);
       if (removedCount === 0) {
-        throw new Meteor.Error('not-found', 'Serviço não encontrado para excluir.');
+        throw new Meteor.Error(
+          'not-found',
+          'Serviço não encontrado para excluir.'
+        );
       }
       console.log(`Removed service ${serviceId} successfully.`);
       return removedCount;
     } catch (error) {
       console.error('Error removing service:', error);
-      throw new Meteor.Error('delete-failed', 'Não foi possível excluir o serviço.');
+      throw new Meteor.Error(
+        'delete-failed',
+        'Não foi possível excluir o serviço.'
+      );
     }
   },
 });

@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 import { AuthForm } from '../AuthForm';
-import { cityOptions, stateOptions, genderOptions, orientationOptions } from '../../../api/formOptions';
+import {
+  cityOptions,
+  stateOptions,
+  genderOptions,
+  orientationOptions,
+} from '../../../api/formOptions';
 
 export const SignupPage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -23,74 +28,140 @@ export const SignupPage = () => {
   const navigate = useNavigate();
 
   const handleChange = (field, value) => {
-    setFormData((prev) => ({...prev, [field]: value}));
-  }
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    if(currentStep === 1){
+    if (currentStep === 1) {
       setCurrentStep(2);
       return;
     }
 
-    if(formData.password !== formData.confirmPassword){
+    if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
     setIsLoading(true);
-    Accounts.createUser({
-      email: formData.email, 
-      password: formData.password, 
-      profile: {
-        name: formData.name,
-        phone: formData.phone,
-        city: formData.city,
-        state: formData.state,
-        birthDate: formData.birthDate,
-        gender: formData.gender,
-        sexualOrientation: formData.sexualOrientation,
-      } 
-    }, (err) => {
-      setIsLoading(false);
-      if(err){
-        let message = err.reason;
-        switch(message){
-          case("Password may not be empty"):
-            setError("Senha não pode estar vazia.");
-            return;
-          case("Passwords do not match"):
-            setError("Senhas não são iguais.");
-            return;
-          case("Need to set a username or email"):
-            setError("Email necessario");
-            return;
-          default:
-            setError(message);
-            return;
+    Accounts.createUser(
+      {
+        email: formData.email,
+        password: formData.password,
+        profile: {
+          name: formData.name,
+          phone: formData.phone,
+          city: formData.city,
+          state: formData.state,
+          birthDate: formData.birthDate,
+          gender: formData.gender,
+          sexualOrientation: formData.sexualOrientation,
+        },
+      },
+      err => {
+        setIsLoading(false);
+        if (err) {
+          let message = err.reason;
+          switch (message) {
+            case 'Password may not be empty':
+              setError('Senha não pode estar vazia.');
+              return;
+            case 'Passwords do not match':
+              setError('Senhas não são iguais.');
+              return;
+            case 'Need to set a username or email':
+              setError('Email necessario');
+              return;
+            default:
+              setError(message);
+              return;
+          }
         }
+        navigate('/');
       }
-      navigate('/');
-    });
+    );
   };
 
-  const stepFields = currentStep === 1 ? [
-    { required: true, name: 'name',               label: 'Nome Completo',       type: 'text',           placeholder:'Digite seu nome completo'},
-    { required: true, name: 'email',              label: 'Email',               type: 'email',          placeholder: 'Digite seu e-mail' },
-    { required: true, name: 'password',           label: 'Senha',               type: 'password',       placeholder: 'Digite sua senha' },
-    { required: true, name: 'confirmPassword',    label: 'Confirmar senha',     type: 'password',       placeholder: 'Confirme sua senha' },
-    { required: true, name: 'phone',              label: 'Contato',             type: 'select-phone',   placeholder: '719823456789'},
-  ] : [
-    { required: true, name: 'state',              label: "Estado",              type: 'select',         options: stateOptions || []},
-    { required: true, name: 'city',               label: "Cidade",              type: 'select',         options: cityOptions || []},
-    { required: true, name: 'birthDate',          label: "Data de Nascimento",  type: 'date',           placeholder:'12/12/2020'},
-    { required: true, name: 'gender',             label: "Gênero",              type: 'select',         options: genderOptions || []},
-    { required: true, name: 'sexualOrientation',  label: "Orientação Sexual",   type: 'select',         options: orientationOptions || []},
-  ];
+  const stepFields =
+    currentStep === 1
+      ? [
+          {
+            required: true,
+            name: 'name',
+            label: 'Nome Completo',
+            type: 'text',
+            placeholder: 'Digite seu nome completo',
+          },
+          {
+            required: true,
+            name: 'email',
+            label: 'Email',
+            type: 'email',
+            placeholder: 'Digite seu e-mail',
+          },
+          {
+            required: true,
+            name: 'password',
+            label: 'Senha',
+            type: 'password',
+            placeholder: 'Digite sua senha',
+          },
+          {
+            required: true,
+            name: 'confirmPassword',
+            label: 'Confirmar senha',
+            type: 'password',
+            placeholder: 'Confirme sua senha',
+          },
+          {
+            required: true,
+            name: 'phone',
+            label: 'Contato',
+            type: 'select-phone',
+            placeholder: '719823456789',
+          },
+        ]
+      : [
+          {
+            required: true,
+            name: 'state',
+            label: 'Estado',
+            type: 'select',
+            options: stateOptions || [],
+          },
+          {
+            required: true,
+            name: 'city',
+            label: 'Cidade',
+            type: 'select',
+            options: cityOptions || [],
+          },
+          {
+            required: true,
+            name: 'birthDate',
+            label: 'Data de Nascimento',
+            type: 'date',
+            placeholder: '12/12/2020',
+          },
+          {
+            required: true,
+            name: 'gender',
+            label: 'Gênero',
+            type: 'select',
+            options: genderOptions || [],
+          },
+          {
+            required: true,
+            name: 'sexualOrientation',
+            label: 'Orientação Sexual',
+            type: 'select',
+            options: orientationOptions || [],
+          },
+        ];
 
   return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
       <div className="flex w-full max-w-6xl">
         <AuthForm
           greetings={true}
@@ -102,17 +173,16 @@ export const SignupPage = () => {
           fields={stepFields}
           values={formData}
           onFieldChange={handleChange}
-          buttonText={currentStep === 1 ? "Avançar" : "Registrar"}
+          buttonText={currentStep === 1 ? 'Avançar' : 'Registrar'}
           footerText="Já tem uma conta?"
           footerLink={{ text: 'Faça Login', to: '/login' }}
           error={error}
         />
-  
+
         <div className="hidden md:flex w-1/2 items-center justify-center p-8">
           <img src="" alt="Imagem" className="max-w-full h-auto" />
         </div>
-        
       </div>
     </div>
-    );
-}
+  );
+};

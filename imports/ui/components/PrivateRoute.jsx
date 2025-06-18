@@ -7,7 +7,7 @@ export const PrivateRoute = () => {
   const keepLoggedIn = localStorage.getItem('keepLoggedIn') === 'true';
   let firstLogin = true;
 
-  if(isLoggedIn && firstLogin){
+  if (isLoggedIn && firstLogin) {
     firstLogin = false;
     return <Outlet />;
   }

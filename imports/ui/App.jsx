@@ -1,5 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from 'react-router-dom';
 import { LoginPage } from './components/pages/LoginPage';
 import { SignupPage } from './components/pages/SignupPage';
 import { HomePage } from './components/pages/HomePage';
@@ -20,10 +26,9 @@ export const App = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-       
 
         <Route element={<PrivateRoute />}>
-          <Route path="/schedule-page" element={<SchedulePage/>}/>
+          <Route path="/schedule-page" element={<SchedulePage />} />
           <Route path="/" element={<HomePage />} />
         </Route>
 
