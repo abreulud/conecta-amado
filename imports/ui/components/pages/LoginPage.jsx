@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { AuthForm } from '../AuthForm';
+import { LogoSection } from '../LogoSection';
 
 export const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -53,39 +54,48 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f9f4ef] px-4">
-      <div className="flex w-full max-w-6xl">
-        <AuthForm
-          title="Faça Login"
-          subtitle="Entre e agende o seu serviço conosco!"
-          step={0}
-          onSubmit={handleSubmit}
-          fields={[
-            {
-              name: 'email',
-              label: 'Email',
-              type: 'email',
-              placeholder: 'Digite seu e-mail',
-            },
-            {
-              name: 'password',
-              label: 'Senha',
-              type: 'password',
-              placeholder: 'Digite sua senha',
-            },
-          ]}
-          values={formData}
-          onFieldChange={handleChange}
-          buttonText="Login"
-          footerText="Não tem uma conta?"
-          footerLink={{ text: 'Registre-se', to: '/signup' }}
-          keepLoggedInOption={true}
-          forgotPasswordLink="/forgot-password"
-          error={error}
-        />
+    <div className="bg-[#f9f4ef]">
+      <nav className="flex justify-between items-center p-6">
+        <LogoSection />
+      </nav>
+      <div className="flex min-h-screen items-center justify-center px-4 ">
+        <div className="flex w-full max-w-6xl mb-32">
+          <AuthForm
+            title="Faça Login"
+            subtitle="Entre e agende o seu serviço conosco!"
+            step={0}
+            onSubmit={handleSubmit}
+            fields={[
+              {
+                name: 'email',
+                label: 'Email',
+                type: 'email',
+                placeholder: 'Digite seu e-mail',
+              },
+              {
+                name: 'password',
+                label: 'Senha',
+                type: 'password',
+                placeholder: 'Digite sua senha',
+              },
+            ]}
+            values={formData}
+            onFieldChange={handleChange}
+            buttonText="Login"
+            footerText="Não tem uma conta?"
+            footerLink={{ text: 'Registre-se', to: '/signup' }}
+            keepLoggedInOption={true}
+            forgotPasswordLink="/forgot-password"
+            error={error}
+          />
 
-        <div className="hidden md:flex w-1/2 items-center justify-center p-8">
-          <img src="" alt="Imagem" className="max-w-full h-auto" />
+          <div className="hidden md:flex w-1/2 items-center justify-center p-8">
+            <img
+              src="../../assets/hug.svg"
+              alt="Imagem"
+              className="max-w-full h-auto"
+            />
+          </div>
         </div>
       </div>
     </div>

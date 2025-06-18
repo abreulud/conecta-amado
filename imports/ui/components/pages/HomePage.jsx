@@ -1,27 +1,25 @@
 import React from 'react';
-import { useTracker } from 'meteor/react-meteor-data';
-import { Meteor } from 'meteor/meteor';
-import { useNavigate } from 'react-router-dom';
+import { HomeNavbar } from '../HomeNavbar';
+import { HeroButtonsSection } from '../HeroButtonsSection';
 
 export const HomePage = () => {
-  const user = useTracker(() => Meteor.user());
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    Meteor.logout();
-    navigate('/login');
-  };
-
   return (
-    <div style={{ maxWidth: '800px', margin: '2rem auto' }}>
-      <h2>Welcome, {user?.profile?.name || 'User'}</h2>
-      <p>Email: {user?.emails?.[0].address}</p>
-      <button
-        onClick={handleLogout}
-        style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}
-      >
-        Logout
-      </button>
+    <div className="bg-[#f9f4ef]">
+      <div className="min-h-screen max-w-screen-xl mx-auto">
+        <HomeNavbar />
+        <div className="flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto px-6 py-20">
+          <div className="md:w-1/2 space-y-8">
+            <HeroButtonsSection />
+          </div>
+          <div className="md:w-1/2">
+            <img
+              src="../../assets/lgbt-pride.svg"
+              alt="Imagem representativa"
+              className="w-full h-auto"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

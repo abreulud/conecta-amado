@@ -4,7 +4,6 @@ import {
   Routes,
   Route,
   Navigate,
-  Outlet,
 } from 'react-router-dom';
 import { LoginPage } from './components/pages/LoginPage';
 import { SignupPage } from './components/pages/SignupPage';
@@ -26,10 +25,10 @@ export const App = () => {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/" element={<HomePage />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/schedule-page" element={<SchedulePage />} />
-          <Route path="/" element={<HomePage />} />
         </Route>
 
         <Route element={<AdminRoute />}>
