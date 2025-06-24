@@ -1,170 +1,194 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Services } from '../../../api/services/services';
 import { Meteor } from 'meteor/meteor';
 
 const weekdays = [
-  { label: 'Domingo', value: 0 },
-  { label: 'Segunda', value: 1 },
-  { label: 'Terça', value: 2 },
-  { label: 'Quarta', value: 3 },
-  { label: 'Quinta', value: 4 },
-  { label: 'Sexta', value: 5 },
-  { label: 'Sábado', value: 6 },
+  { label: 'Domingo', value: 0, abbr: 'Dom' },
+  { label: 'Segunda', value: 1, abbr: 'Seg' },
+  { label: 'Terça', value: 2, abbr: 'Ter' },
+  { label: 'Quarta', value: 3, abbr: 'Qua' },
+  { label: 'Quinta', value: 4, abbr: 'Qui' },
+  { label: 'Sexta', value: 5, abbr: 'Sex' },
+  { label: 'Sábado', value: 6, abbr: 'Sáb' },
 ];
 
 export const AdminServiceManager = () => {
-  const [newService, setNewService] = useState('');
-  const [newStartTime, setNewStartTime] = useState('09:00'); // default start time
-  const [newEndTime, setNewEndTime] = useState('18:00'); // default end time
-  // New state for allowed weekdays for new service
-  const [newAllowedWeekdays, setNewAllowedWeekdays] = useState([]);
+  const [newService, setNewService] = useState({
+    name: '',
+    startTime: '09:00',
+    endTime: '18:00',
+    allowedWeekdays: [],
+  });
 
-  const [editing, setEditing] = useState(null);
-  const [editedName, setEditedName] = useState('');
-  const [editedStartTime, setEditedStartTime] = useState('');
-  const [editedEndTime, setEditedEndTime] = useState('');
-  // New state for allowed weekdays when editing
-  const [editedAllowedWeekdays, setEditedAllowedWeekdays] = useState([]);
+  const [editingId, setEditingId] = useState(null);
 
   const services = useTracker(() => {
     Meteor.subscribe('services');
     return Services.find().fetch();
   });
 
-  // Toggle weekday in array (for new service)
-  const toggleNewWeekday = dayValue => {
-    if (newAllowedWeekdays.includes(dayValue)) {
-      setNewAllowedWeekdays(newAllowedWeekdays.filter(d => d !== dayValue));
-    } else {
-      setNewAllowedWeekdays([...newAllowedWeekdays, dayValue]);
-    }
-  };
+  const toggleWeekday = useCallback((weekdaysArray, value) => {
+    return weekdaysArray.includes(value)
+      ? weekdaysArray.filter(d => d !== value)
+      : [...weekdaysArray, value];
+  }, []);
 
-  // Toggle weekday in array (for editing service)
-  const toggleEditedWeekday = dayValue => {
-    if (editedAllowedWeekdays.includes(dayValue)) {
-      setEditedAllowedWeekdays(
-        editedAllowedWeekdays.filter(d => d !== dayValue)
+  const handleNewServiceChange = useCallback((field, value) => {
+    setNewService(prev => ({ ...prev, [field]: value }));
+  }, []);
+
+  const handleEditChange = useCallback(
+    (id, field, value) => {
+      const updatedServices = services.map(s =>
+        s._id === id ? { ...s, [field]: value } : s
       );
-    } else {
-      setEditedAllowedWeekdays([...editedAllowedWeekdays, dayValue]);
-    }
-  };
+      return updatedServices.find(s => s._id === id);
+    },
+    [services]
+  );
 
-  // Updated: send all 4 parameters when creating
-  const handleCreate = () => {
-    if (!newService.trim()) {
+  const handleCreate = useCallback(() => {
+    if (!newService.name.trim()) {
       alert('Por favor, informe o nome do serviço.');
       return;
     }
-    if (newAllowedWeekdays.length === 0) {
+    if (newService.allowedWeekdays.length === 0) {
       alert('Por favor, selecione pelo menos um dia permitido.');
       return;
     }
+
     Meteor.call(
       'services.insert',
-      newService,
-      newStartTime,
-      newEndTime,
-      newAllowedWeekdays,
+      newService.name,
+      newService.startTime,
+      newService.endTime,
+      newService.allowedWeekdays,
       err => {
         if (!err) {
-          setNewService('');
-          setNewStartTime('09:00');
-          setNewEndTime('18:00');
-          setNewAllowedWeekdays([]);
+          setNewService({
+            name: '',
+            startTime: '09:00',
+            endTime: '18:00',
+            allowedWeekdays: [],
+          });
         } else {
           alert(`Erro ao adicionar serviço: ${err.reason}`);
         }
       }
     );
-  };
+  }, [newService]);
 
-  // Updated: accept allowedWeekdays when editing
-  const handleEdit = (id, name, startTime, endTime, allowedWeekdays = []) => {
-    setEditing(id);
-    setEditedName(name);
-    setEditedStartTime(startTime || '09:00');
-    setEditedEndTime(endTime || '18:00');
-    setEditedAllowedWeekdays(allowedWeekdays);
-  };
-
-  const handleUpdate = id => {
-    if (!editedName.trim()) {
-      alert('Por favor, informe o nome do serviço.');
-      return;
-    }
-    if (editedAllowedWeekdays.length === 0) {
-      alert('Por favor, selecione pelo menos um dia permitido.');
-      return;
-    }
-    Meteor.call(
-      'services.update',
-      id,
-      editedName,
-      editedStartTime,
-      editedEndTime,
-      editedAllowedWeekdays,
-      err => {
-        if (!err) setEditing(null);
-        else alert(`Erro ao atualizar serviço: ${err.reason}`);
+  const handleUpdate = useCallback(
+    id => {
+      const service = services.find(s => s._id === id);
+      if (!service.name.trim()) {
+        alert('Por favor, informe o nome do serviço.');
+        return;
       }
-    );
-  };
+      if (service.allowedWeekdays?.length === 0) {
+        alert('Por favor, selecione pelo menos um dia permitido.');
+        return;
+      }
 
-  const handleDelete = id => {
+      Meteor.call(
+        'services.update',
+        id,
+        service.name,
+        service.startTime,
+        service.endTime,
+        service.allowedWeekdays || [],
+        err => {
+          if (!err) setEditingId(null);
+          else alert(`Erro ao atualizar serviço: ${err.reason}`);
+        }
+      );
+    },
+    [services]
+  );
+
+  const handleDelete = useCallback(id => {
+    if (!confirm('Tem certeza que deseja excluir este serviço?')) return;
+
     Meteor.call('services.remove', id, err => {
       if (err) alert(`Erro ao excluir serviço: ${err.reason}`);
     });
-  };
+  }, []);
 
   return (
-    <div className="p-6 bg-white rounded shadow max-w-md mx-auto">
-      <h2 className="text-xl font-semibold mb-4">Gerenciar Serviços</h2>
+    <div>
+      <h2 className="text-xl font-semibold text-gray-800 mb-6">
+        Gerenciar Serviços
+      </h2>
 
-      {/* New service creation */}
-      <div className="flex flex-col gap-2 mb-4">
-        <input
-          value={newService}
-          onChange={e => setNewService(e.target.value)}
-          placeholder="Novo serviço"
-          className="border px-3 py-2 rounded"
-        />
-        <div className="flex gap-2">
-          <label>
-            Início:
-            <input
-              type="time"
-              value={newStartTime}
-              onChange={e => setNewStartTime(e.target.value)}
-              className="border px-2 py-1 rounded ml-2"
-            />
-          </label>
+      {/* New service form */}
+      <div className="mb-8 p-4 bg-gray-50 rounded-lg">
+        <h3 className="font-medium text-gray-700 mb-3">
+          Adicionar Novo Serviço
+        </h3>
 
-          <label>
-            Fim:
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Nome do Serviço
+            </label>
             <input
-              type="time"
-              value={newEndTime}
-              onChange={e => setNewEndTime(e.target.value)}
-              className="border px-2 py-1 rounded ml-2"
+              value={newService.name}
+              onChange={e => handleNewServiceChange('name', e.target.value)}
+              placeholder="Nome do serviço"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-          </label>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Horário Início
+              </label>
+              <input
+                type="time"
+                value={newService.startTime}
+                onChange={e =>
+                  handleNewServiceChange('startTime', e.target.value)
+                }
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Horário Fim
+              </label>
+              <input
+                type="time"
+                value={newService.endTime}
+                onChange={e =>
+                  handleNewServiceChange('endTime', e.target.value)
+                }
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Allowed weekdays checkboxes for new service */}
-        <div className="mb-2">
-          <span className="font-semibold">Dias permitidos:</span>
-          <div className="flex flex-wrap gap-2 mt-1">
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600 mb-2">
+            Dias Permitidos
+          </label>
+          <div className="flex flex-wrap gap-3">
             {weekdays.map(({ label, value }) => (
-              <label key={value} className="inline-flex items-center space-x-2">
+              <label key={value} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
-                  checked={newAllowedWeekdays.includes(value)}
-                  onChange={() => toggleNewWeekday(value)}
+                  checked={newService.allowedWeekdays.includes(value)}
+                  onChange={() =>
+                    handleNewServiceChange(
+                      'allowedWeekdays',
+                      toggleWeekday(newService.allowedWeekdays, value)
+                    )
+                  }
+                  className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
-                <span>{label}</span>
+                <span className="text-sm text-gray-700">{label}</span>
               </label>
             ))}
           </div>
@@ -172,103 +196,181 @@ export const AdminServiceManager = () => {
 
         <button
           onClick={handleCreate}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-2"
+          className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Adicionar
+          Adicionar Serviço
         </button>
       </div>
 
-      {/* List of existing services with edit/delete */}
-      <ul className="space-y-2">
-        {services.map(service => (
-          <li key={service._id} className="flex items-center justify-between">
-            {editing === service._id ? (
-              <>
-                <input
-                  value={editedName}
-                  onChange={e => setEditedName(e.target.value)}
-                  className="border px-2 py-1 rounded w-full mr-2"
-                />
-                <input
-                  type="time"
-                  value={editedStartTime}
-                  onChange={e => setEditedStartTime(e.target.value)}
-                  className="border px-2 py-1 rounded mr-2"
-                />
-                <input
-                  type="time"
-                  value={editedEndTime}
-                  onChange={e => setEditedEndTime(e.target.value)}
-                  className="border px-2 py-1 rounded mr-2"
-                />
+      {/* Services list */}
+      <div>
+        <h3 className="font-medium text-gray-700 mb-3">Serviços Cadastrados</h3>
 
-                {/* Allowed weekdays checkboxes for editing */}
-                <div className="flex flex-wrap gap-2 mr-2">
-                  {weekdays.map(({ label, value }) => (
-                    <label
-                      key={value}
-                      className="inline-flex items-center space-x-1"
+        {services.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">
+            Nenhum serviço cadastrado
+          </p>
+        ) : (
+          <div className="space-y-4">
+            {services.map(service => (
+              <ServiceItem
+                key={service._id}
+                service={service}
+                isEditing={editingId === service._id}
+                onEditToggle={() =>
+                  setEditingId(editingId === service._id ? null : service._id)
+                }
+                onFieldChange={(field, value) =>
+                  handleEditChange(service._id, field, value)
+                }
+                onWeekdayToggle={value =>
+                  handleEditChange(
+                    service._id,
+                    'allowedWeekdays',
+                    toggleWeekday(service.allowedWeekdays || [], value)
+                  )
+                }
+                onSave={() => handleUpdate(service._id)}
+                onDelete={() => handleDelete(service._id)}
+                weekdays={weekdays}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ServiceItem = ({
+  service,
+  isEditing,
+  onEditToggle,
+  onFieldChange,
+  onWeekdayToggle,
+  onSave,
+  onDelete,
+  weekdays,
+}) => {
+  return (
+    <div className="p-4 border border-gray-200 rounded-lg bg-white shadow-sm">
+      {isEditing ? (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Nome
+              </label>
+              <input
+                value={service.name}
+                onChange={e => onFieldChange('name', e.target.value)}
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Início
+                </label>
+                <input
+                  type="time"
+                  value={service.startTime || '09:00'}
+                  onChange={e => onFieldChange('startTime', e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Fim
+                </label>
+                <input
+                  type="time"
+                  value={service.endTime || '18:00'}
+                  onChange={e => onFieldChange('endTime', e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-2">
+              Dias Permitidos
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {weekdays.map(({ label, value }) => (
+                <label key={value} className="inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={(service.allowedWeekdays || []).includes(value)}
+                    onChange={() => onWeekdayToggle(value)}
+                    className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  />
+                  <span className="ml-1 text-xs text-gray-700">{label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
+            <button
+              onClick={onSave}
+              className="px-3 py-1.5 bg-green-600 text-white rounded-md hover:bg-green-700"
+            >
+              Salvar
+            </button>
+            <button
+              onClick={onEditToggle}
+              className="px-3 py-1.5 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="flex-1">
+            <h4 className="font-medium text-gray-900">{service.name}</h4>
+            <div className="text-sm text-gray-600 mt-1">
+              Horário: {service.startTime || '09:00'} -{' '}
+              {service.endTime || '18:00'}
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {service.allowedWeekdays?.length > 0 ? (
+                service.allowedWeekdays.map(day => {
+                  const weekday = weekdays.find(d => d.value === day);
+                  return (
+                    <span
+                      key={day}
+                      className="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full"
                     >
-                      <input
-                        type="checkbox"
-                        checked={editedAllowedWeekdays.includes(value)}
-                        onChange={() => toggleEditedWeekday(value)}
-                      />
-                      <span className="text-sm">{label}</span>
-                    </label>
-                  ))}
-                </div>
+                      {weekday?.abbr}
+                    </span>
+                  );
+                })
+              ) : (
+                <span className="text-xs text-gray-500">Todos os dias</span>
+              )}
+            </div>
+          </div>
 
-                <button
-                  onClick={() => handleUpdate(service._id)}
-                  className="text-green-600"
-                >
-                  Salvar
-                </button>
-              </>
-            ) : (
-              <>
-                <span>{service.name}</span>
-                <span className="ml-4 text-sm text-gray-600">
-                  {service.startTime || '09:00'} - {service.endTime || '18:00'}
-                </span>
-                {/* Show allowed weekdays as abbreviated labels */}
-                <span className="ml-4 text-sm text-gray-500">
-                  {service.allowedWeekdays && service.allowedWeekdays.length > 0
-                    ? service.allowedWeekdays
-                        .map(d =>
-                          weekdays.find(w => w.value === d)?.label?.slice(0, 3)
-                        )
-                        .join(', ')
-                    : 'Todos os dias'}
-                </span>
-                <div className="flex gap-2 ml-auto">
-                  <button
-                    onClick={() =>
-                      handleEdit(
-                        service._id,
-                        service.name,
-                        service.startTime,
-                        service.endTime,
-                        service.allowedWeekdays || []
-                      )
-                    }
-                    className="text-blue-600 hover:underline"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleDelete(service._id)}
-                    className="text-red-600 hover:underline"
-                  >
-                    Excluir
-                  </button>
-                </div>
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
+          <div className="flex gap-2">
+            <button
+              onClick={onEditToggle}
+              className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200"
+            >
+              Editar
+            </button>
+            <button
+              onClick={onDelete}
+              className="px-3 py-1.5 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+            >
+              Excluir
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
