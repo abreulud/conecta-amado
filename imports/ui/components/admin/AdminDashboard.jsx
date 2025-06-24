@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { AdminServiceManager } from './AdminServiceManager';
 import { Bookings } from '../../../api/bookings/bookings';
 import { Services } from '../../../api/services/services';
+import { BookingsTable } from './BookingsTable';
 
 export const AdminDashboard = () => {
   const user = useTracker(() => Meteor.user());
@@ -14,12 +15,10 @@ export const AdminDashboard = () => {
     const subBookings = Meteor.subscribe('bookings');
     const subServices = Meteor.subscribe('services');
 
-    const loading = !subBookings.ready() || !subServices.ready();
-
     return {
       bookings: Bookings.find({}, { sort: { createdAt: -1 } }).fetch(),
       services: Services.find().fetch(),
-      loading,
+      loading: !subBookings.ready() || !subServices.ready(),
     };
   }, []);
 
@@ -28,68 +27,57 @@ export const AdminDashboard = () => {
     navigate('/admin/login');
   };
 
-  const getServiceName = id => {
-    const service = services.find(s => s._id === id);
-    return service ? service.name : 'Serviço desconhecido';
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">
-            Admin Dashboard - Welcome {user?.profile?.name}
-          </h2>
-          <button
-            onClick={handleLogout}
-            className="auth-button bg-red-600 hover:bg-red-700"
-          >
-            Logout
-          </button>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-md p-4 md:p-6 mb-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Painel Administrativo
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Bem-vindo,{' '}
+                <span className="font-medium text-blue-600">
+                  {user?.profile?.name}
+                </span>
+              </p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            >
+              Sair
+            </button>
+          </div>
         </div>
 
-        {/* Bookings Table */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-2xl font-semibold mb-4">Scheduled Bookings</h3>
-          {loading ? (
-            <p>Carregando reservas...</p>
-          ) : bookings.length === 0 ? (
-            <p>Nenhuma reserva encontrada.</p>
-          ) : (
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Name
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Service
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Date
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Time
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookings.map(({ _id, name, serviceId, date, time }) => (
-                  <tr key={_id} className="hover:bg-gray-100">
-                    <td className="border border-gray-300 px-4 py-2">{name}</td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {getServiceName(serviceId)}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">{date}</td>
-                    <td className="border border-gray-300 px-4 py-2">{time}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Bookings Section */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-800">
+                Reservas Agendadas
+              </h2>
+              <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded-full">
+                {bookings.length}{' '}
+                {bookings.length === 1 ? 'reserva' : 'reservas'}
+              </span>
+            </div>
+            <BookingsTable
+              bookings={bookings}
+              services={services}
+              loading={loading}
+            />
+          </div>
 
-        <AdminServiceManager />
+          {/* Services Manager Section */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+            <AdminServiceManager />
+          </div>
+        </div>
       </div>
     </div>
   );
