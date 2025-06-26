@@ -1,21 +1,32 @@
-// imports/api/services/methods.js
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 import { Services } from './services';
 
 console.log('methods.js loaded');
 
 Meteor.methods({
-  async 'services.insert'(name, startTime, endTime, allowedWeekdays) {
+  async 'services.insert'({
+    name,
+    startTime,
+    endTime,
+    allowedWeekdays,
+    category,
+    price,
+  }) {
     check(name, String);
     check(startTime, String);
     check(endTime, String);
     check(allowedWeekdays, [Number]);
+    check(category, String);
+    check(price, Match.Maybe(Number));
+
     console.log('Calling services.insert with:', {
       name,
       startTime,
       endTime,
       allowedWeekdays,
+      category,
+      price,
     });
 
     if (!allowedWeekdays.length) {
@@ -31,6 +42,9 @@ Meteor.methods({
         startTime,
         endTime,
         allowedWeekdays,
+        category,
+        price,
+        createdAt: new Date(),
       });
       console.log(`Inserted new service with _id: ${id}`);
       return id;
@@ -40,23 +54,30 @@ Meteor.methods({
     }
   },
 
-  async 'services.update'(
+  async 'services.update'({
     serviceId,
     name,
     startTime,
     endTime,
-    allowedWeekdays
-  ) {
+    allowedWeekdays,
+    category,
+    price,
+  }) {
     check(serviceId, String);
     check(name, String);
     check(startTime, String);
     check(endTime, String);
     check(allowedWeekdays, [Number]);
+    check(category, String);
+    check(price, Match.Maybe(Number));
+
     console.log(`Calling services.update on id: ${serviceId} with`, {
       name,
       startTime,
       endTime,
       allowedWeekdays,
+      category,
+      price,
     });
 
     if (!allowedWeekdays.length) {
@@ -68,7 +89,15 @@ Meteor.methods({
 
     try {
       const updatedCount = await Services.updateAsync(serviceId, {
-        $set: { name, startTime, endTime, allowedWeekdays },
+        $set: {
+          name,
+          startTime,
+          endTime,
+          allowedWeekdays,
+          category,
+          price,
+          updatedAt: new Date(),
+        },
       });
       if (updatedCount === 0) {
         throw new Meteor.Error(

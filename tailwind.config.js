@@ -1,12 +1,19 @@
 module.exports = {
-  content: ["./imports/ui/**/*.{js,jsx,ts,tsx}"],
+  content: ['./imports/**/*.{js,jsx,ts,tsx}', './client/*.html'],
   theme: {
     extend: {
       colors: {
-        primary: '#2563eb',
-        secondary: '#1e40af',
+        red: '#ed4a68',
+        'light-red': '#f5aec5',
+        'light-beige': '#faf6f2',
+        'light-blue': '#dae2f5',
+        blue: '#89ace8',
+      },
+      fontFamily: {
+        yeseva: ['Yeseva One', 'serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
     },
   },
   plugins: [],
-}
+};

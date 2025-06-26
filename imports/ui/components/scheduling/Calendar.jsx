@@ -51,62 +51,97 @@ export const Calendar = ({
   }
 
   return (
-    <div className="text-center">
-      {/*Header */}
-      <div className="flex items-center justify-between w-full max-w-xs mx-auto mb-4">
+    <div className="text-center font-montserrat w-full">
+      {/* Header - Aumentado */}
+      <div className="flex items-center justify-between mb-6 px-4">
         <button
           onClick={prevMonth}
-          className="text-2xl text-gray-600 hover:text-blue-500 transition"
+          className="p-2 text-blue hover:bg-light-blue rounded-full transition"
         >
-          &lt;
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
         </button>
-        <span className="flex flex-col items-center font-semibold text-lg">
-          <span className="text-xl uppercase">
-            {currentDate.toLocaleString('pt-BR', { month: 'long' })}
-          </span>
-          <span className="text-sm">{year}</span>
-        </span>
+
+        <div className="text-center">
+          <h3 className="text-xl font-semibold text-gray-800">
+            {currentDate
+              .toLocaleString('pt-BR', { month: 'long' })
+              .toUpperCase()}
+          </h3>
+          <p className="text-md text-gray-600">{year}</p>
+        </div>
+
         <button
           onClick={nextMonth}
-          className="text-2xl text-gray-600 hover:text-blue-500 transition"
+          className="p-2 text-blue hover:bg-light-blue rounded-full transition"
         >
-          &gt;
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
         </button>
       </div>
 
-      {/*Weekday names row */}
-      <div className="grid grid-cols-7 gap-4 text-sm font-semibold m-auto">
+      {/* Weekday names - Aumentado */}
+      <div className="grid grid-cols-7 gap-2 mb-3">
         {weekdays.map((day, i) => (
-          <div key={i}>{day}</div>
+          <div key={i} className="text-sm font-medium text-gray-500 py-2">
+            {day}
+          </div>
         ))}
       </div>
 
-      {/*Days Grid */}
-      <div className="grid grid-cols-7 gap-4 mt-4">
+      {/* Days Grid - Aumentado */}
+      <div className="grid grid-cols-7 gap-2">
         {daysArray.map((day, idx) => {
           if (!day) {
-            return <div key={idx} className="w-8 h-8" />;
+            return <div key={idx} className="h-12" />;
           }
 
-          // Construct the date for this day
           const dateObj = new Date(year, month, day);
           const dateISO = dateObj.toISOString().slice(0, 10);
           const weekday = dateObj.getDay();
-
           const isFullyBooked = fullyBookedDates?.includes(dateISO);
           const isWeekdayAllowed = allowedWeekdays.includes(weekday);
           const isDisabled = isFullyBooked || !isWeekdayAllowed;
+          const isToday =
+            day === new Date().getDate() &&
+            month === new Date().getMonth() &&
+            year === new Date().getFullYear();
 
           return (
             <button
               key={idx}
               onClick={() => !isDisabled && onChangeDate(dateObj)}
               disabled={isDisabled}
-              className={`w-12 h-12 rounded-full flex m-auto items-center justify-center cursor-pointer
-                ${isSelected(day) ? 'bg-white text-black font-bold' : ''}
-                ${isFullyBooked ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : ''}
-                ${!isWeekdayAllowed ? 'bg-gray-200 text-gray-400 cursor-not-allowed ' : ''}
-                ${!isSelected(day) && !isFullyBooked && isWeekdayAllowed ? 'hover:bg-white' : ''}
+              className={`h-14 w-14 rounded-full flex items-center justify-center transition-colors text-lg
+                ${isToday ? 'border-2 border-blue' : ''}
+                ${isSelected(day) ? 'bg-blue text-white' : ''}
+                ${isFullyBooked ? 'text-gray-400 cursor-not-allowed' : ''}
+                ${!isWeekdayAllowed ? 'text-gray-400 cursor-not-allowed' : ''}
+                ${
+                  !isSelected(day) && !isFullyBooked && isWeekdayAllowed
+                    ? 'hover:bg-light-blue hover:text-blue'
+                    : ''
+                }
               `}
             >
               {day}

@@ -222,274 +222,306 @@ export const BookingPage = () => {
   }, [selectedServiceId]);
 
   return (
-    <div className="h-screen font-sans flex flex-col">
-      <Navbar username={userName} />
+    <div className="min-h-screen">
+      {/* Full-page background split */}
+      <div className="fixed inset-0 flex z-0">
+        <div className="w-1/2 bg-blue"></div>
+        <div className="w-1/2 bg-white"></div>
+      </div>
 
-      <div className="flex-1 flex flex-col md:flex-row">
-        {/* Painel Esquerdo - Calendário */}
-        <div
-          className={`w-full md:w-1/2 bg-blue-100 p-4 md:p-8 transition-all ${bookingStep >= 2 ? 'block' : 'hidden md:block'}`}
-        >
-          <div className="transform scale-105 md:scale-100">
-            <Calendar
-              onChangeDate={date => {
-                setSelectedDate(date);
-                setBookingStep(3);
-              }}
-              selectedDate={selectedDate}
-              onMonthChange={setCalendarMonth}
-              fullyBookedDates={fullyBookedDates}
-              allowedWeekdays={allowedWeekdays}
-              highlightSelection={bookingStep >= 2}
-            />
-          </div>
+      {/* Content container */}
+      <div className="relative z-10">
+        {/* Navbar */}
+        <div className="max-w-7xl mx-auto">
+          <Navbar username={userName} />
         </div>
 
-        {/* Painel Direito - Formulário */}
-        <div className="w-full md:w-1/2 bg-[#fafafa] p-4 md:p-8 flex flex-col">
-          {/* Passo 1: Seleção de Serviço */}
-          {bookingStep === 1 && (
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold mb-6 text-center">
-                Escolha o serviço
-              </h2>
+        {/* Main content */}
+        <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="overflow-hidden">
+            <div className="flex flex-col md:flex-row">
+              {/* Left panel - Content on blue background */}
+              <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col items-center justify-center">
+                <div className="max-w-lg w-full">
+                  <h2 className="text-2xl font-yeseva text-white mb-6 text-center">
+                    Agende seu horário
+                  </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                {services.map(service => (
-                  <button
-                    key={service._id}
-                    className={`p-4 border rounded-lg text-left transition-all ${
-                      selectedServiceId === service._id
-                        ? 'border-blue-500 bg-blue-50 shadow-md'
-                        : 'border-gray-300 hover:border-blue-300'
-                    }`}
-                    onClick={() => {
-                      setSelectedServiceId(service._id);
-                      goToNextStep();
-                    }}
-                  >
-                    <h3 className="font-medium">{service.name}</h3>
-                    {service.duration && (
-                      <p className="text-sm text-gray-600 mt-1">
-                        Duração: {service.duration} min
-                      </p>
-                    )}
-                    {service.price && (
-                      <p className="text-sm text-gray-600">
-                        Preço: R$ {service.price.toFixed(2)}
-                      </p>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Passo 2: Seleção de Data */}
-          {bookingStep === 2 && (
-            <div className="flex-1">
-              <div className="flex items-center mb-6">
-                <button
-                  onClick={goToPrevStep}
-                  className="mr-4 p-2 rounded-full hover:bg-gray-100"
-                >
-                  &larr;
-                </button>
-                <h2 className="text-xl font-semibold">Selecione a data</h2>
-              </div>
-
-              <div className="mb-8">
-                <p className="text-gray-600 mb-2">
-                  Serviço selecionado:
-                  <span className="font-semibold ml-2">
-                    {selectedService?.name}
-                  </span>
-                </p>
-                <p className="text-sm text-gray-500">
-                  {selectedService?.description || 'Sem descrição'}
-                </p>
-              </div>
-
-              <div className="bg-white p-4 rounded-lg shadow-sm mb-8">
-                <p className="text-center text-gray-600">
-                  Selecione uma data no calendário ao lado
-                </p>
-              </div>
-
-              <button
-                onClick={goToNextStep}
-                disabled={!selectedDate}
-                className={`w-full py-3 rounded-lg ${
-                  selectedDate
-                    ? 'bg-blue-500 text-white hover:bg-blue-600'
-                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                {selectedDate
-                  ? 'Continuar para horários'
-                  : 'Selecione uma data'}
-              </button>
-            </div>
-          )}
-
-          {/* Passo 3: Seleção de Horário */}
-          {bookingStep === 3 && (
-            <div className="flex-1">
-              <div className="flex items-center mb-6">
-                <button
-                  onClick={goToPrevStep}
-                  className="mr-4 p-2 rounded-full hover:bg-gray-100"
-                >
-                  &larr;
-                </button>
-                <h2 className="text-xl font-semibold">Escolha o horário</h2>
-              </div>
-
-              <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
-                <p className="font-medium">
-                  {selectedService?.name} -{' '}
-                  {selectedDate?.toLocaleDateString('pt-BR', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                  })}
-                </p>
-              </div>
-
-              <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-2">
-                {timeSlots.length === 0 ? (
-                  <div className="col-span-full text-center py-8">
-                    <p className="text-gray-500 mb-4">
-                      {selectedDate
-                        ? 'Não há horários disponíveis para esta data'
-                        : 'Selecione uma data primeiro'}
-                    </p>
-                    {selectedDate && (
-                      <button
-                        onClick={() => setSelectedDate(null)}
-                        className="text-blue-500 hover:underline"
-                      >
-                        Escolher outra data
-                      </button>
-                    )}
+                  <div className="bg-white p-4 rounded-lg shadow-md">
+                    <Calendar
+                      onChangeDate={date => {
+                        setSelectedDate(date);
+                        setBookingStep(3);
+                      }}
+                      selectedDate={selectedDate}
+                      onMonthChange={setCalendarMonth}
+                      fullyBookedDates={fullyBookedDates}
+                      allowedWeekdays={allowedWeekdays}
+                      highlightSelection={bookingStep >= 2}
+                    />
                   </div>
-                ) : (
-                  timeSlots.map(time => (
+                </div>
+              </div>
+              {/* Painel Direito - Branco */}
+              <div className="w-full md:w-1/2 p-6 md:p-8">
+                {/* Passo 1: Seleção de Serviço */}
+                {bookingStep === 1 && (
+                  <div>
+                    <h2 className="text-2xl font-montserrat font-semibold mb-6 text-center">
+                      Escolha o serviço
+                    </h2>
+
+                    <div className="grid grid-cols-1 gap-4 mb-8">
+                      {services.map(service => (
+                        <button
+                          key={service._id}
+                          className={`p-4 border rounded-lg text-left transition-all ${
+                            selectedServiceId === service._id
+                              ? 'border-blue bg-light-blue shadow-md'
+                              : 'border-gray-300 hover:border-blue'
+                          }`}
+                          onClick={() => {
+                            setSelectedServiceId(service._id);
+                            goToNextStep();
+                          }}
+                        >
+                          <h3 className="font-medium font-montserrat">
+                            {service.name}
+                          </h3>
+                          {service.duration && (
+                            <p className="text-sm text-gray-600 mt-1 font-montserrat">
+                              Duração: {service.duration} min
+                            </p>
+                          )}
+                          {service.price && (
+                            <p className="text-sm text-gray-600 font-montserrat">
+                              Preço: R$ {service.price.toFixed(2)}
+                            </p>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Passo 2: Seleção de Data */}
+                {bookingStep === 2 && (
+                  <div className="flex-1">
+                    <div className="flex items-center mb-6">
+                      <button
+                        onClick={goToPrevStep}
+                        className="mr-4 p-2 rounded-full hover:bg-gray-100"
+                      >
+                        &larr;
+                      </button>
+                      <h2 className="text-xl font-semibold">
+                        Selecione a data
+                      </h2>
+                    </div>
+
+                    <div className="mb-8">
+                      <p className="text-gray-600 mb-2">
+                        Serviço selecionado:
+                        <span className="font-semibold ml-2">
+                          {selectedService?.name}
+                        </span>
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {selectedService?.description || 'Sem descrição'}
+                      </p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg shadow-sm mb-8">
+                      <p className="text-center text-gray-600">
+                        Selecione uma data no calendário ao lado
+                      </p>
+                    </div>
+
                     <button
-                      key={time}
-                      className={`py-3 rounded-lg border transition-all ${
-                        selectedTime === time
-                          ? 'bg-blue-500 text-white border-blue-500'
-                          : 'border-gray-300 hover:border-blue-400'
+                      onClick={goToNextStep}
+                      disabled={!selectedDate}
+                      className={`w-full py-3 rounded-lg ${
+                        selectedDate
+                          ? 'bg-blue text-white hover:bg-blue'
+                          : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                       }`}
-                      onClick={() => setSelectedTime(time)}
                     >
-                      {time}
+                      {selectedDate
+                        ? 'Continuar para horários'
+                        : 'Selecione uma data'}
                     </button>
-                  ))
+                  </div>
+                )}
+
+                {/* Passo 3: Seleção de Horário */}
+                {bookingStep === 3 && (
+                  <div className="flex-1">
+                    <div className="flex items-center mb-6">
+                      <button
+                        onClick={goToPrevStep}
+                        className="mr-4 p-2 rounded-full hover:bg-gray-100"
+                      >
+                        &larr;
+                      </button>
+                      <h2 className="text-xl font-semibold">
+                        Escolha o horário
+                      </h2>
+                    </div>
+
+                    <div className="mb-6 bg-white p-4 rounded-lg shadow-sm">
+                      <p className="font-medium">
+                        {selectedService?.name} -{' '}
+                        {selectedDate?.toLocaleDateString('pt-BR', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                        })}
+                      </p>
+                    </div>
+
+                    <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-2">
+                      {timeSlots.length === 0 ? (
+                        <div className="col-span-full text-center py-8">
+                          <p className="text-gray-500 mb-4">
+                            {selectedDate
+                              ? 'Não há horários disponíveis para esta data'
+                              : 'Selecione uma data primeiro'}
+                          </p>
+                          {selectedDate && (
+                            <button
+                              onClick={() => setSelectedDate(null)}
+                              className="text-blue hover:underline"
+                            >
+                              Escolher outra data
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        timeSlots.map(time => (
+                          <button
+                            key={time}
+                            className={`py-3 rounded-lg border transition-all ${
+                              selectedTime === time
+                                ? 'bg-blue text-white border-blue'
+                                : 'border-gray-300 hover:border-blue'
+                            }`}
+                            onClick={() => setSelectedTime(time)}
+                          >
+                            {time}
+                          </button>
+                        ))
+                      )}
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={goToPrevStep}
+                        className="flex-1 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
+                        Voltar
+                      </button>
+                      <button
+                        onClick={goToNextStep}
+                        disabled={!selectedTime}
+                        className={`flex-1 py-3 rounded-lg ${
+                          selectedTime
+                            ? 'bg-blue text-white hover:bg-blue'
+                            : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                        }`}
+                      >
+                        Continuar
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Passo 4: Confirmação */}
+                {bookingStep === 4 && (
+                  <div className="flex-1">
+                    <div className="flex items-center mb-6">
+                      <button
+                        onClick={goToPrevStep}
+                        className="mr-4 p-2 rounded-full hover:bg-gray-100"
+                      >
+                        &larr;
+                      </button>
+                      <h2 className="text-xl font-semibold">
+                        Confirme seu agendamento
+                      </h2>
+                    </div>
+
+                    <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
+                      <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                          <h3 className="text-sm text-gray-500 mb-1">
+                            Serviço
+                          </h3>
+                          <p className="font-medium">{selectedService?.name}</p>
+                        </div>
+                        <div>
+                          <h3 className="text-sm text-gray-500 mb-1">Data</h3>
+                          <p className="font-medium">
+                            {selectedDate?.toLocaleDateString('pt-BR', {
+                              weekday: 'long',
+                              day: 'numeric',
+                              month: 'long',
+                            })}
+                          </p>
+                        </div>
+                        <div>
+                          <h3 className="text-sm text-gray-500 mb-1">
+                            Horário
+                          </h3>
+                          <p className="font-medium">{selectedTime}</p>
+                        </div>
+                        <div>
+                          <h3 className="text-sm text-gray-500 mb-1">
+                            Duração
+                          </h3>
+                          <p className="font-medium">
+                            {selectedService?.duration || 30} minutos
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4">
+                        <label className="block text-sm text-gray-700 mb-2">
+                          Observações (opcional)
+                        </label>
+                        <textarea
+                          value={userNote}
+                          onChange={e => setUserNote(e.target.value)}
+                          placeholder="Alguma informação adicional que devemos saber?"
+                          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue focus:border-blue"
+                          rows={3}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={goToPrevStep}
+                        className="flex-1 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+                      >
+                        Voltar
+                      </button>
+                      <button
+                        onClick={handleSchedule}
+                        disabled={isLoading}
+                        className={`flex-1 p-3 rounded-lg ${
+                          isLoading
+                            ? 'bg-blue-400 cursor-not-allowed'
+                            : 'bg-blue hover:bg-blue'
+                        } text-white`}
+                      >
+                        {isLoading ? 'Agendando...' : 'Confirmar Agendamento'}
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={goToPrevStep}
-                  className="flex-1 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Voltar
-                </button>
-                <button
-                  onClick={goToNextStep}
-                  disabled={!selectedTime}
-                  className={`flex-1 py-3 rounded-lg ${
-                    selectedTime
-                      ? 'bg-blue-500 text-white hover:bg-blue-600'
-                      : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  }`}
-                >
-                  Continuar
-                </button>
-              </div>
             </div>
-          )}
-
-          {/* Passo 4: Confirmação */}
-          {bookingStep === 4 && (
-            <div className="flex-1">
-              <div className="flex items-center mb-6">
-                <button
-                  onClick={goToPrevStep}
-                  className="mr-4 p-2 rounded-full hover:bg-gray-100"
-                >
-                  &larr;
-                </button>
-                <h2 className="text-xl font-semibold">
-                  Confirme seu agendamento
-                </h2>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <h3 className="text-sm text-gray-500 mb-1">Serviço</h3>
-                    <p className="font-medium">{selectedService?.name}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm text-gray-500 mb-1">Data</h3>
-                    <p className="font-medium">
-                      {selectedDate?.toLocaleDateString('pt-BR', {
-                        weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                      })}
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm text-gray-500 mb-1">Horário</h3>
-                    <p className="font-medium">{selectedTime}</p>
-                  </div>
-                  <div>
-                    <h3 className="text-sm text-gray-500 mb-1">Duração</h3>
-                    <p className="font-medium">
-                      {selectedService?.duration || 30} minutos
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm text-gray-700 mb-2">
-                    Observações (opcional)
-                  </label>
-                  <textarea
-                    value={userNote}
-                    onChange={e => setUserNote(e.target.value)}
-                    placeholder="Alguma informação adicional que devemos saber?"
-                    className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    rows={3}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={goToPrevStep}
-                  className="flex-1 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Voltar
-                </button>
-                <button
-                  onClick={handleSchedule}
-                  disabled={isLoading}
-                  className={`flex-1 py-3 rounded-lg ${
-                    isLoading
-                      ? 'bg-blue-400 cursor-not-allowed'
-                      : 'bg-blue-500 hover:bg-blue-600'
-                  } text-white`}
-                >
-                  {isLoading ? 'Agendando...' : 'Confirmar Agendamento'}
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
