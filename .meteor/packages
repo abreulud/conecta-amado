@@ -22,3 +22,6 @@ react-meteor-data       # React higher-order component for reactively tracking M
 accounts-base
 accounts-password
 email
+service-configuration
+promise
+check
