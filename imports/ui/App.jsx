@@ -14,7 +14,9 @@ import { ResetPasswordPage } from './components/pages/ResetPasswordPage';
 import { AdminLogin } from './components/admin/AdminLogin';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminRoute } from './components/admin/AdminRoute';
-import { SchedulePage } from './components/pages/SchedulePage';
+import { BookingPage } from './components/pages/BookingPage';
+import { UserBookingsPage } from './components/pages/UserBookingsPage';
+import { BookingConfirmation } from './components/pages/BookingConfirmation';
 
 export const App = () => {
   return (
@@ -28,14 +30,17 @@ export const App = () => {
         <Route path="/" element={<HomePage />} />
 
         <Route element={<PrivateRoute />}>
-          <Route path="/schedule-page" element={<SchedulePage />} />
+          <Route path="/book" element={<BookingPage />} />
         </Route>
+
+        <Route path="/my-bookings" element={<UserBookingsPage />} />
+        <Route path="/booking-confirmation" element={<BookingConfirmation />} />
 
         <Route element={<AdminRoute />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
