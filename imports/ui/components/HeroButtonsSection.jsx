@@ -15,7 +15,7 @@ export const HeroButtonsSection = () => {
         </p>
         <div className="flex gap-4">
           <Link
-            to="/schedule-page"
+            to="/book"
             className="bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition"
           >
             Agendar

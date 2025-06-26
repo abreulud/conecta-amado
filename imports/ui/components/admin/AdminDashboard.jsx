@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { useNavigate } from 'react-router-dom';
@@ -11,8 +11,19 @@ export const AdminDashboard = () => {
   const user = useTracker(() => Meteor.user());
   const navigate = useNavigate();
 
-  const { bookings, services, loading } = useTracker(() => {
-    const subBookings = Meteor.subscribe('bookings');
+  const isAdmin = user?.profile?.isAdmin;
+
+  console.log('AdminDashboard user:', {
+    id: user?._id,
+    email: user?.emails?.[0]?.address,
+    profile: user?.profile,
+    isAdmin,
+  });
+
+  const { bookings, services, isLoading } = useTracker(() => {
+    if (!isAdmin) return { bookings: [], services: [], isLoading: false };
+
+    const subBookings = Meteor.subscribe('bookings.admin');
     const subServices = Meteor.subscribe('services');
 
     return {
@@ -20,7 +31,16 @@ export const AdminDashboard = () => {
       services: Services.find().fetch(),
       loading: !subBookings.ready() || !subServices.ready(),
     };
-  }, []);
+  }, [isAdmin]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/admin/login');
+    } else if (!isAdmin) {
+      toast.error('Acesso restrito a administradores');
+      navigate('/');
+    }
+  }, [user, isAdmin, navigate]);
 
   const handleLogout = () => {
     Meteor.logout();
@@ -59,18 +79,34 @@ export const AdminDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-800">
-                Reservas Agendadas
+                Todas as Reservas
               </h2>
-              <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded-full">
-                {bookings.length}{' '}
-                {bookings.length === 1 ? 'reserva' : 'reservas'}
-              </span>
+              {!isLoading && (
+                <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded-full">
+                  {bookings.length}{' '}
+                  {bookings.length === 1 ? 'reserva' : 'reservas'}
+                </span>
+              )}
             </div>
-            <BookingsTable
-              bookings={bookings}
-              services={services}
-              loading={loading}
-            />
+
+            {isLoading ? (
+              <p className="py-6 text-center text-gray-500">
+                Carregando reservas...
+              </p>
+            ) : bookings.length === 0 ? (
+              <p className="py-6 text-center text-gray-500">
+                Nenhuma reserva encontrada
+              </p>
+            ) : (
+              <BookingsTable
+                bookings={bookings}
+                services={services}
+                showNote={true}
+                formatDate={dateString =>
+                  new Date(dateString).toLocaleDateString('pt-BR')
+                }
+              />
+            )}
           </div>
 
           {/* Services Manager Section */}
