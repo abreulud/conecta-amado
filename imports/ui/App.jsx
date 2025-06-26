@@ -17,6 +17,7 @@ import { AdminRoute } from './components/admin/AdminRoute';
 import { BookingPage } from './components/pages/BookingPage';
 import { UserBookingsPage } from './components/pages/UserBookingsPage';
 import { BookingConfirmation } from './components/pages/BookingConfirmation';
+import { ServiceDisplayPage } from './components/pages/ServiceDisplayPage';
 
 export const App = () => {
   return (
@@ -28,6 +29,7 @@ export const App = () => {
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/services" element={<ServiceDisplayPage />} />
 
         <Route element={<PrivateRoute />}>
           <Route path="/book" element={<BookingPage />} />

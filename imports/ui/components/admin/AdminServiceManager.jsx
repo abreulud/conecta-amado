@@ -19,6 +19,8 @@ export const AdminServiceManager = () => {
     startTime: '09:00',
     endTime: '18:00',
     allowedWeekdays: [],
+    category: 'other',
+    price: null,
   });
 
   const [editingId, setEditingId] = useState(null);
@@ -60,10 +62,14 @@ export const AdminServiceManager = () => {
 
     Meteor.call(
       'services.insert',
-      newService.name,
-      newService.startTime,
-      newService.endTime,
-      newService.allowedWeekdays,
+      {
+        name: newService.name,
+        startTime: newService.startTime,
+        endTime: newService.endTime,
+        allowedWeekdays: newService.allowedWeekdays,
+        category: newService.category,
+        price: newService.price,
+      },
       err => {
         if (!err) {
           setNewService({
@@ -71,6 +77,8 @@ export const AdminServiceManager = () => {
             startTime: '09:00',
             endTime: '18:00',
             allowedWeekdays: [],
+            category: 'other',
+            price: null,
           });
         } else {
           alert(`Erro ao adicionar serviço: ${err.reason}`);
@@ -94,10 +102,14 @@ export const AdminServiceManager = () => {
       Meteor.call(
         'services.update',
         id,
-        service.name,
-        service.startTime,
-        service.endTime,
-        service.allowedWeekdays || [],
+        {
+          name: service.name,
+          startTime: service.startTime,
+          endTime: service.endTime,
+          allowedWeekdays: service.allowedWeekdays || [],
+          category: service.category,
+          price: service.price,
+        },
         err => {
           if (!err) setEditingId(null);
           else alert(`Erro ao atualizar serviço: ${err.reason}`);
@@ -138,6 +150,45 @@ export const AdminServiceManager = () => {
               placeholder="Nome do serviço"
               className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Categoria
+              </label>
+              <select
+                value={newService.category}
+                onChange={e =>
+                  handleNewServiceChange('category', e.target.value)
+                }
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="medical">Consulta Médica</option>
+                <option value="exam">Exame</option>
+                <option value="therapy">Terapia</option>
+                <option value="other">Outros</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-600 mb-1">
+                Preço (R$)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={newService.price ?? ''}
+                onChange={e =>
+                  handleNewServiceChange(
+                    'price',
+                    e.target.value ? parseFloat(e.target.value) : null
+                  )
+                }
+                placeholder="0.00"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -268,6 +319,43 @@ const ServiceItem = ({
               />
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Categoria
+                </label>
+                <select
+                  value={service.category}
+                  onChange={e => onFieldChange('category', e.target.value)}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="medical">Consulta Médica</option>
+                  <option value="exam">Exame</option>
+                  <option value="therapy">Terapia</option>
+                  <option value="other">Outros</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-600 mb-1">
+                  Preço (R$)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={service.price ?? ''}
+                  onChange={e =>
+                    onFieldChange(
+                      'price',
+                      e.target.value ? parseFloat(e.target.value) : null
+                    )
+                  }
+                  placeholder="0.00"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-gray-600 mb-1">
@@ -332,6 +420,19 @@ const ServiceItem = ({
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div className="flex-1">
             <h4 className="font-medium text-gray-900">{service.name}</h4>
+            <div className="text-sm text-gray-600 mt-1">
+              Categoria:{' '}
+              {
+                {
+                  medical: 'Consulta Médica',
+                  exam: 'Exame',
+                  therapy: 'Terapia',
+                  other: 'Outros',
+                }[service.category]
+              }{' '}
+              | Preço:{' '}
+              {service.price ? `R$ ${service.price.toFixed(2)}` : 'A consultar'}
+            </div>
             <div className="text-sm text-gray-600 mt-1">
               Horário: {service.startTime || '09:00'} -{' '}
               {service.endTime || '18:00'}
