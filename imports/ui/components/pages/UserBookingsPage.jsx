@@ -5,26 +5,25 @@ import { BookingsTable } from '../admin/BookingsTable';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Bookings } from '../../../api/bookings/bookings';
-import { Services } from '../../../api/services/services'; // Importe a coleção de serviços
+import { Services } from '../../../api/services/services';
 
 export const UserBookingsPage = () => {
   const navigate = useNavigate();
   const [initialLoad, setInitialLoad] = useState(true);
   const user = useTracker(() => Meteor.user());
 
-  // Agora buscando tanto bookings quanto services
   const { bookings, services, isLoading } = useTracker(() => {
     if (!user) return { bookings: [], services: [], isLoading: false };
 
     const bookingsHandler = Meteor.subscribe('bookings.user');
-    const servicesHandler = Meteor.subscribe('services'); // Assinar os serviços
+    const servicesHandler = Meteor.subscribe('services');
 
     return {
       bookings: Bookings.find(
         { userId: user._id },
         { sort: { date: -1, time: -1 } }
       ).fetch(),
-      services: Services.find().fetch(), // Obter todos os serviços
+      services: Services.find().fetch(),
       isLoading: !bookingsHandler.ready() || !servicesHandler.ready(),
     };
   }, [user]);
@@ -51,7 +50,6 @@ export const UserBookingsPage = () => {
     }
   };
 
-  // Formata data para exibição
   const formatDate = dateString => {
     return new Date(dateString).toLocaleDateString('pt-BR', {
       weekday: 'short',
@@ -67,7 +65,7 @@ export const UserBookingsPage = () => {
           <h1 className="text-2xl font-bold text-gray-900">Minhas Reservas</h1>
           <button
             onClick={() => navigate('/book')}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="px-4 py-2 bg-blue text-white rounded-md hover:bg-dark-blue"
           >
             Nova Reserva
           </button>
@@ -82,7 +80,7 @@ export const UserBookingsPage = () => {
             <p className="text-gray-600 mb-4">Você ainda não tem reservas</p>
             <button
               onClick={() => navigate('/book')}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              className="px-4 py-2 bg-blue text-white rounded-md hover:bg-dark-blue"
             >
               Fazer uma reserva
             </button>
@@ -91,7 +89,7 @@ export const UserBookingsPage = () => {
           <BookingsTable
             rowsPerPage={15}
             bookings={bookings}
-            services={services} // Passando os serviços para a tabela
+            services={services}
             showActions={true}
             formatDate={formatDate}
             onCancel={handleCancelBooking}

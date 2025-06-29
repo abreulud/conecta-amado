@@ -7,7 +7,7 @@ export const NavLinks = () => {
   const links = [
     { to: '/', label: 'Início' },
     { to: '/services', label: 'Serviços' },
-    { to: '/destaques', label: 'Destaques' },
+    //{ to: '/destaques', label: 'Destaques' },
   ];
 
   return (

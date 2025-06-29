@@ -223,24 +223,19 @@ export const BookingPage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Full-page background split */}
       <div className="fixed inset-0 flex z-0">
         <div className="w-1/2 bg-blue"></div>
         <div className="w-1/2 bg-white"></div>
       </div>
 
-      {/* Content container */}
       <div className="relative z-10">
-        {/* Navbar */}
         <div className="max-w-7xl mx-auto">
           <Navbar username={userName} />
         </div>
 
-        {/* Main content */}
         <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="overflow-hidden">
             <div className="flex flex-col md:flex-row">
-              {/* Left panel - Content on blue background */}
               <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col items-center justify-center">
                 <div className="max-w-lg w-full">
                   <h2 className="text-2xl font-yeseva text-white mb-6 text-center">
@@ -262,7 +257,7 @@ export const BookingPage = () => {
                   </div>
                 </div>
               </div>
-              {/* Painel Direito - Branco */}
+
               <div className="w-full md:w-1/2 p-6 md:p-8">
                 {/* Passo 1: Seleção de Serviço */}
                 {bookingStep === 1 && (
@@ -342,7 +337,7 @@ export const BookingPage = () => {
                       disabled={!selectedDate}
                       className={`w-full py-3 rounded-lg ${
                         selectedDate
-                          ? 'bg-blue text-white hover:bg-blue'
+                          ? 'bg-blue text-white hover:bg-dark-blue'
                           : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                       }`}
                     >
@@ -402,7 +397,7 @@ export const BookingPage = () => {
                             key={time}
                             className={`py-3 rounded-lg border transition-all ${
                               selectedTime === time
-                                ? 'bg-blue text-white border-blue'
+                                ? 'bg-blue text-white'
                                 : 'border-gray-300 hover:border-blue'
                             }`}
                             onClick={() => setSelectedTime(time)}
@@ -425,7 +420,7 @@ export const BookingPage = () => {
                         disabled={!selectedTime}
                         className={`flex-1 py-3 rounded-lg ${
                           selectedTime
-                            ? 'bg-blue text-white hover:bg-blue'
+                            ? 'bg-blue text-white hover:bg-dark-blue'
                             : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                         }`}
                       >
@@ -511,7 +506,7 @@ export const BookingPage = () => {
                         className={`flex-1 p-3 rounded-lg ${
                           isLoading
                             ? 'bg-blue-400 cursor-not-allowed'
-                            : 'bg-blue hover:bg-blue'
+                            : 'bg-blue hover:bg-dark-blue'
                         } text-white`}
                       >
                         {isLoading ? 'Agendando...' : 'Confirmar Agendamento'}

@@ -1,6 +1,10 @@
 import SimpleSchema from 'simpl-schema';
 
 export const ServiceSchema = new SimpleSchema({
+  serviceId: {
+    type: String,
+    label: 'Id do Serviço',
+  },
   name: {
     type: String,
     label: 'Nome do Serviço',
@@ -24,7 +28,6 @@ export const ServiceSchema = new SimpleSchema({
     type: SimpleSchema.Integer,
     allowedValues: [0, 1, 2, 3, 4, 5, 6],
   },
-  // NOVOS CAMPOS ADICIONADOS
   category: {
     type: String,
     label: 'Categoria',

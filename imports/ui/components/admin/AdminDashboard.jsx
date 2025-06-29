@@ -59,7 +59,7 @@ export const AdminDashboard = () => {
               </h1>
               <p className="text-gray-600 mt-1">
                 Bem-vindo,{' '}
-                <span className="font-medium text-blue-600">
+                <span className="font-medium text-blue">
                   {user?.profile?.name}
                 </span>
               </p>
@@ -82,7 +82,7 @@ export const AdminDashboard = () => {
                 Todas as Reservas
               </h2>
               {!isLoading && (
-                <span className="bg-blue-100 text-blue-800 text-xs px-2.5 py-0.5 rounded-full">
+                <span className="bg-light-blue text-dark-blue text-xs px-2.5 py-0.5 rounded-full">
                   {bookings.length}{' '}
                   {bookings.length === 1 ? 'reserva' : 'reservas'}
                 </span>

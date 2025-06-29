@@ -20,7 +20,6 @@ export const ServicesTable = ({ categoryFilter }) => {
     };
   });
 
-  // Função para formatar os dias da semana
   const formatWeekdays = weekdays => {
     if (!weekdays || weekdays.length === 0) return 'Todos os dias';
 
@@ -31,7 +30,7 @@ export const ServicesTable = ({ categoryFilter }) => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue"></div>
       </div>
     );
   }
@@ -55,17 +54,6 @@ export const ServicesTable = ({ categoryFilter }) => {
         <h3 className="mt-2 text-lg font-medium text-gray-900">
           Nenhum serviço cadastrado
         </h3>
-        <p className="mt-1 text-gray-500">
-          Comece adicionando seus primeiros serviços
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/admin/services"
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
-          >
-            Adicionar Serviço
-          </Link>
-        </div>
       </div>
     );
   }
@@ -73,7 +61,7 @@ export const ServicesTable = ({ categoryFilter }) => {
   return (
     <div className="overflow-x-auto rounded-lg shadow-lg border border-gray-100">
       <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-blue-50">
+        <thead className="bg-light-blue">
           <tr>
             <TableHeader>Serviço</TableHeader>
             <TableHeader>Duração</TableHeader>
@@ -100,14 +88,14 @@ export const ServicesTable = ({ categoryFilter }) => {
 const TableHeader = ({ children, className = '' }) => (
   <th
     scope="col"
-    className={`px-6 py-3 text-left text-xs font-medium text-blue-800 uppercase tracking-wider ${className}`}
+    className={`px-6 py-3 text-left text-xs font-medium text-dark-blue uppercase tracking-wider ${className}`}
   >
     {children}
   </th>
 );
 
 const TableRow = ({ service, formatWeekdays }) => (
-  <tr className="hover:bg-blue-50 transition-colors duration-150">
+  <tr className="hover:bg-light-blue transition-colors duration-150">
     <td className="px-6 py-4 whitespace-nowrap">
       <div className="flex items-center">
         <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16" />
@@ -149,7 +137,7 @@ const TableRow = ({ service, formatWeekdays }) => (
     <td className="px-6 py-4 whitespace-nowrap text-center">
       <Link
         to={`/book?serviceId=${service._id}`}
-        className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+        className="px-3 py-1 bg-blue text-white rounded-md hover:bg-dark-blue text-sm"
       >
         Agendar
       </Link>

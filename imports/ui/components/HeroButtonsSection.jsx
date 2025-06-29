@@ -3,15 +3,16 @@ import { Link } from 'react-router-dom';
 
 export const HeroButtonsSection = () => {
   return (
-    <section className="bg-[#f9f4ef] py-20 px-6 md:px-12 lg:px-24">
+    <section className="py-20 px-6 md:px-12 lg:px-24">
       <div className="max-w-4xl mx-auto text-left">
         <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 ">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit
+          Um espaço seguro para cuidar de você, exatamente como você é
         </h2>
         <p className="text-lg text-gray-700 mb-10">
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-          enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-          ut aliquip ex ea commodo consequat.
+          Na Conecta Amado, oferecemos serviços especializados de saúde e apoio
+          psicossocial para a comunidade LGBTQIA+. Aqui, você encontra
+          acolhimento, respeito e profissionais qualificados para atender suas
+          necessidades com sensibilidade e expertise.
         </p>
         <div className="flex gap-4">
           <Link

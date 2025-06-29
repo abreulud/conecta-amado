@@ -148,7 +148,7 @@ export const AdminServiceManager = () => {
               value={newService.name}
               onChange={e => handleNewServiceChange('name', e.target.value)}
               placeholder="Nome do serviço"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue focus:border-blue"
             />
           </div>
 
@@ -162,7 +162,7 @@ export const AdminServiceManager = () => {
                 onChange={e =>
                   handleNewServiceChange('category', e.target.value)
                 }
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue focus:border-blue"
               >
                 <option value="medical">Consulta Médica</option>
                 <option value="exam">Exame</option>
@@ -186,7 +186,7 @@ export const AdminServiceManager = () => {
                   )
                 }
                 placeholder="0.00"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue focus:border-blue"
               />
             </div>
           </div>
@@ -237,7 +237,7 @@ export const AdminServiceManager = () => {
                       toggleWeekday(newService.allowedWeekdays, value)
                     )
                   }
-                  className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  className="h-4 w-4 text-blue rounded border-gray-300 focus:ring-blue"
                 />
                 <span className="text-sm text-gray-700">{label}</span>
               </label>
@@ -247,7 +247,7 @@ export const AdminServiceManager = () => {
 
         <button
           onClick={handleCreate}
-          className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="w-full md:w-auto px-4 py-2 bg-blue text-white rounded-md hover:bg-dark-blue transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue focus:ring-offset-2"
         >
           Adicionar Serviço
         </button>
@@ -315,7 +315,7 @@ const ServiceItem = ({
               <input
                 value={service.name}
                 onChange={e => onFieldChange('name', e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue focus:border-blue"
               />
             </div>
 
@@ -327,7 +327,7 @@ const ServiceItem = ({
                 <select
                   value={service.category}
                   onChange={e => onFieldChange('category', e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue focus:border-blue"
                 >
                   <option value="medical">Consulta Médica</option>
                   <option value="exam">Exame</option>
@@ -351,7 +351,7 @@ const ServiceItem = ({
                     )
                   }
                   placeholder="0.00"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue focus:border-blue"
                 />
               </div>
             </div>
@@ -393,7 +393,7 @@ const ServiceItem = ({
                     type="checkbox"
                     checked={(service.allowedWeekdays || []).includes(value)}
                     onChange={() => onWeekdayToggle(value)}
-                    className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    className="h-4 w-4 text-blue rounded border-gray-300 focus:ring-blue"
                   />
                   <span className="ml-1 text-xs text-gray-700">{label}</span>
                 </label>
@@ -444,7 +444,7 @@ const ServiceItem = ({
                   return (
                     <span
                       key={day}
-                      className="inline-block px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full"
+                      className="inline-block px-2 py-0.5 bg-light-blue text-dark-blue text-xs rounded-full"
                     >
                       {weekday?.abbr}
                     </span>
@@ -459,13 +459,13 @@ const ServiceItem = ({
           <div className="flex gap-2">
             <button
               onClick={onEditToggle}
-              className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200"
+              className="px-3 py-1.5 bg-blue text-white rounded-md hover:bg-dark-blue"
             >
               Editar
             </button>
             <button
               onClick={onDelete}
-              className="px-3 py-1.5 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+              className="px-3 py-1.5 bg-light-red text-red rounded-md hover:bg-red hover:text-white"
             >
               Excluir
             </button>

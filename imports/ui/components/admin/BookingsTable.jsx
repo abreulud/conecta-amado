@@ -1,4 +1,3 @@
-// imports/ui/components/admin/BookingsTable.jsx
 import React, { useMemo, useState } from 'react';
 
 export const BookingsTable = ({
@@ -13,7 +12,6 @@ export const BookingsTable = ({
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Mapeia bookings para adicionar nome do serviço
   const enhancedBookings = useMemo(() => {
     return bookings.map(booking => {
       const service = services.find(s => s._id === booking.serviceId);
@@ -25,13 +23,11 @@ export const BookingsTable = ({
     });
   }, [bookings, services]);
 
-  // Paginação
   const paginatedBookings = useMemo(() => {
     const startIndex = (currentPage - 1) * rowsPerPage;
     return enhancedBookings.slice(startIndex, startIndex + rowsPerPage);
   }, [enhancedBookings, currentPage]);
 
-  // Determina classe CSS baseada no status
   const getStatusClass = status => {
     switch (status) {
       case 'confirmed':
@@ -39,7 +35,7 @@ export const BookingsTable = ({
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'cancelled':
-        return 'bg-red-100 text-red-800';
+        return 'bg-light-red text-dark-red';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -60,12 +56,12 @@ export const BookingsTable = ({
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-            {showNote && <TableHeader>Anotações</TableHeader>}
+            <TableHeader>Status</TableHeader>
             <TableHeader>Cliente</TableHeader>
             <TableHeader>Serviço</TableHeader>
             <TableHeader>Data</TableHeader>
             <TableHeader>Horário</TableHeader>
-            <TableHeader>Status</TableHeader>
+            {showNote && <TableHeader>Anotações</TableHeader>}
             {showActions && (
               <TableHeader className="text-right">Ações</TableHeader>
             )}
@@ -148,12 +144,16 @@ const TableRow = ({
   onCancel,
 }) => (
   <tr className="hover:bg-gray-50 transition-colors duration-150">
-    {/* Coluna de Anotações */}
-    {showNote && (
-      <td className="px-6 py-4 whitespace-normal max-w-xs text-sm text-gray-500">
-        {booking.note || 'Nenhuma'}
-      </td>
-    )}
+    {/* Coluna de Status */}
+    <td className="px-6 py-4 whitespace-nowrap">
+      <span
+        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(booking.status)}`}
+      >
+        {booking.status === 'confirmed' && 'Confirmada'}
+        {booking.status === 'pending' && 'Pendente'}
+        {booking.status === 'cancelled' && 'Cancelada'}
+      </span>
+    </td>
 
     {/* Coluna de Cliente */}
     <td className="px-6 py-4 whitespace-nowrap">
@@ -182,16 +182,12 @@ const TableRow = ({
       {booking.time}
     </td>
 
-    {/* Coluna de Status */}
-    <td className="px-6 py-4 whitespace-nowrap">
-      <span
-        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(booking.status)}`}
-      >
-        {booking.status === 'confirmed' && 'Confirmada'}
-        {booking.status === 'pending' && 'Pendente'}
-        {booking.status === 'cancelled' && 'Cancelada'}
-      </span>
-    </td>
+    {/* Coluna de Anotações */}
+    {showNote && (
+      <td className="px-6 py-4 whitespace-normal max-w-xs text-sm text-gray-500">
+        {booking.note || 'Nenhuma'}
+      </td>
+    )}
 
     {/* Coluna de Ações */}
     {showActions && (
@@ -199,7 +195,7 @@ const TableRow = ({
         {booking.status !== 'cancelled' && (
           <button
             onClick={() => onCancel && onCancel(booking._id)}
-            className="text-red-600 hover:text-red-900"
+            className="text-red hover:text-dark-red"
           >
             Cancelar
           </button>

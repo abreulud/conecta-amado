@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { cityOptions, stateOptions } from '../../api/formOptions';
@@ -46,7 +46,7 @@ export const AuthForm = ({
                   <input
                     type="text"
                     placeholder={field.placeholder}
-                    className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 pr-10 focus:outline-none focus:ring-2 focus:ring-blue"
                     value={values[field.name] || ''}
                     onChange={e => onFieldChange(field.name, e.target.value)}
                   />
@@ -64,7 +64,7 @@ export const AuthForm = ({
                   <select
                     value={values.state || ''}
                     onChange={e => onFieldChange(field.name, e.target.value)}
-                    className="w-full rounded border text-gray-400 border-gray-300 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full rounded border text-gray-400 border-gray-300 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue"
                     required
                   >
                     {stateOptions.map(option => (
@@ -87,7 +87,7 @@ export const AuthForm = ({
                     value={values.city || ''}
                     disabled={!selectedState}
                     onChange={e => onFieldChange(field.name, e.target.value)}
-                    className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue"
                     required
                   >
                     {cities.map(city => (
@@ -108,7 +108,7 @@ export const AuthForm = ({
                   name={field.name}
                   value={values[field.name] || ''}
                   onChange={e => onFieldChange(field.name, e.target.value)}
-                  className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 bg-white focus:outline-none focus:ring-2 focus:ring-blue"
                   required
                 >
                   {field.options.map((opt, i) => (
@@ -131,7 +131,7 @@ export const AuthForm = ({
                     isPassword && showPassword ? 'text' : field.type || 'text'
                   }
                   placeholder={field.placeholder}
-                  className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full rounded border border-gray-300 text-gray-400 px-3 py-4 focus:outline-none focus:ring-2 focus:ring-blue"
                   value={values[field.name] || ''}
                   onChange={e => onFieldChange(field.name, e.target.value)}
                   required
@@ -165,7 +165,7 @@ export const AuthForm = ({
                   checked={values.keepLoggedIn || false}
                   onChange={e =>
                     onFieldChange('keepLoggedIn', e.target.checked)
-                  } // ✅ Update parent
+                  }
                 />
                 <label htmlFor="keepLogged" className="text-xs">
                   Lembrar-me
@@ -184,7 +184,7 @@ export const AuthForm = ({
         )}
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-sm">
+          <div className="bg-light-red border border-red text-dark-red px-4 py-3 rounded relative text-sm">
             {error}
           </div>
         )}

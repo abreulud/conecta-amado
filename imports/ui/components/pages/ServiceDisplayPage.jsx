@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { ServicesTable } from '../ServicesTable';
 import { Services } from '../../../api/services/services';
-import { LogoSection } from '../LogoSection';
+import { HomeNavbar } from '../HomeNavbar';
 
 export const ServiceDisplayPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -33,8 +33,8 @@ export const ServiceDisplayPage = () => {
 
   return (
     <div className="bg-blue">
-      <nav className="flex justify-between items-center px-6 pt-6 max-w-screen-xl mx-auto">
-        <LogoSection />
+      <nav className="max-w-screen-xl mx-auto">
+        <HomeNavbar />
       </nav>
       <div className="min-h-screen bg-gradient-to-b bg-light-blue to-white">
         {/* Hero Section */}
@@ -45,10 +45,9 @@ export const ServiceDisplayPage = () => {
                 Nossos Serviços
               </h1>
               <p className="mt-6 text-xl max-w-3xl mx-auto">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
+                Você merece cuidado que respeite sua identidade. Agende agora
+                seu atendimento em um ambiente onde você pode ser quem realmente
+                é.
               </p>
             </div>
           </div>

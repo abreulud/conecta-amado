@@ -52,7 +52,6 @@ export const Calendar = ({
 
   return (
     <div className="text-center font-montserrat w-full">
-      {/* Header - Aumentado */}
       <div className="flex items-center justify-between mb-6 px-4">
         <button
           onClick={prevMonth}
@@ -100,7 +99,6 @@ export const Calendar = ({
         </button>
       </div>
 
-      {/* Weekday names - Aumentado */}
       <div className="grid grid-cols-7 gap-2 mb-3">
         {weekdays.map((day, i) => (
           <div key={i} className="text-sm font-medium text-gray-500 py-2">
@@ -109,7 +107,6 @@ export const Calendar = ({
         ))}
       </div>
 
-      {/* Days Grid - Aumentado */}
       <div className="grid grid-cols-7 gap-2">
         {daysArray.map((day, idx) => {
           if (!day) {
@@ -139,7 +136,7 @@ export const Calendar = ({
                 ${!isWeekdayAllowed ? 'text-gray-400 cursor-not-allowed' : ''}
                 ${
                   !isSelected(day) && !isFullyBooked && isWeekdayAllowed
-                    ? 'hover:bg-light-blue hover:text-blue'
+                    ? 'hover:bg-blue hover:text-white'
                     : ''
                 }
               `}

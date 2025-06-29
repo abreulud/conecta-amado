@@ -76,7 +76,7 @@ export const BookingConfirmation = () => {
         <div className="flex flex-col gap-3">
           <button
             onClick={() => navigate('/my-bookings')}
-            className="py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            className="py-3 bg-blue text-white rounded-lg hover:bg-dark-blue"
           >
             Ver Minhas Reservas
           </button>

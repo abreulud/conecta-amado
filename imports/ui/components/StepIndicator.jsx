@@ -10,15 +10,15 @@ export const StepIndicator = ({ step, onStepClick }) => {
           <div
             onClick={() => step > s && onStepClick(s)}
             className={`w-3 h-3 rounded-full cursor-pointer transition
-                  ${step >= s ? 'bg-blue-600' : 'bg-gray-300'}
+                  ${step >= s ? 'bg-dark-blue' : 'bg-gray-300'}
                   ${step > s ? 'hover:opacity-80' : 'cursor-default'}
                 `}
           />
-          {/* Add line after every step except the last one */}
+
           {idx < steps.length - 1 && (
             <div
               className={`w-16 h-1 transition
-                    ${step > s ? 'bg-blue-600' : 'bg-gray-300'}
+                    ${step > s ? 'bg-dark-blue' : 'bg-gray-300'}
                   `}
             />
           )}

@@ -4,7 +4,7 @@ import { HeroButtonsSection } from '../HeroButtonsSection';
 
 export const HomePage = () => {
   return (
-    <div className="bg-[#f9f4ef]">
+    <div className="bg-light-beige">
       <div className="min-h-screen max-w-screen-xl mx-auto">
         <HomeNavbar />
         <div className="flex flex-col md:flex-row items-center justify-between max-w-7xl mx-auto px-6 py-20">
