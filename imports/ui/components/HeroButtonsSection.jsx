@@ -5,6 +5,10 @@ export const HeroButtonsSection = () => {
   return (
     <section className="py-20 px-6 md:px-12 lg:px-24">
       <div className="max-w-4xl mx-auto text-left">
+        <p className="text-sm text-gray-500 uppercase tracking-wider mb-4">
+          CONECTANDO CUIDADO E 
+          DIVERSIDADE COM AMOR!
+        </p>
         <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900 ">
           Um espaço seguro para cuidar de você, exatamente como você é
         </h2>
